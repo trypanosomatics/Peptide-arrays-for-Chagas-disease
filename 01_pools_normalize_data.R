@@ -1,6 +1,5 @@
 #### CONFIG ####
-# main_folder <- "." #When running in Rstudio, set this to the absolute path of the folder containing this code
-main_folder <- "C:/Users/Ramiro/Documents/GitHub/Peptide-arrays-for-Chagas-disease" #example 
+main_folder <- "." #When running in Rstudio, set this to the absolute path of the folder containing this code
 setwd(main_folder)
 
 testing <- TRUE #set this to TRUE for testing purposes

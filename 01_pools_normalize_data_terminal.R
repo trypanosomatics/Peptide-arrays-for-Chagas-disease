@@ -2,13 +2,13 @@
 args <- commandArgs(trailingOnly = TRUE)
 
 if (length(args) == 0) {
-  main_folder <- "C:/Users/Ramiro/Documents/GitHub/Peptide-arrays-for-Chagas-disease" #valor por defecto
-  testing <- TRUE #valor por defecto
-  sources <- c("AR", "BO", "BR", "CO", "MX", "US", "LE") #valor por defecto
+  main_folder <- "." #Default value
+  testing <- TRUE #Default value
+  sources <- c("AR", "BO", "BR", "CO", "MX", "US", "LE") #Default value
 } else {
-  main_folder <- args[1] # primer argumento
-  testing <- as.logical(args[2]) # segundo argumento (TRUE o FALSE)
-  sources <- unlist(strsplit(args[3], ",")) # tercer argumento (lista de sources separados por comas)
+  main_folder <- args[1] # first argument
+  testing <- as.logical(args[2]) # second argument (TRUE o FALSE)
+  sources <- unlist(strsplit(args[3], ",")) # third argument (comma-separated list of sources)
 }
 
 setwd(main_folder)
