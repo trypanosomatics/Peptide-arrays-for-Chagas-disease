@@ -1,14 +1,16 @@
 #!/usr/bin/env Rscript
 
+#### CONFIG for running in terminal####
+args <- commandArgs(trailingOnly = TRUE)
+
 # Default values
 main_folder <- "."
 testing <- TRUE
 sources <- c("AR", "BO", "BR", "CO", "MX", "US")
 min_amount_of_peptides_in_peak <- 2
 # sd_multiplier_for_cutoff determines cutoff as: mode + sd_multiplier_for_cutoff * sd
+sd_multiplier_for_cutoff <- NULL #as default is 1 in testing and 4 in chagastope_data
 
-#### CONFIG for running in terminal####
-args <- commandArgs(trailingOnly = TRUE)
 
 for (i in seq(1, length(args), by = 2)) {
   if (args[i] == "--main_folder") {
@@ -23,9 +25,18 @@ for (i in seq(1, length(args), by = 2)) {
   if (args[i] == "--min_amount_of_peptides_in_peak") {
     min_amount_of_peptides_in_peak <- as.numeric(args[i + 1])
   }
+  if (args[i] == "--sd_multiplier_for_cutoff") {
+    sd_multiplier_for_cutoff <- as.numeric(args[i + 1])
+  }
 }
 
 #### PATH CONFIG ####
+if (testing == TRUE) {
+  project_folder <- sprintf("%s/test_data", main_folder)
+} else {
+  project_folder <- sprintf("%s/chagastope_data", main_folder)
+}
+
 output_folder <- sprintf("%s/outputs/03_pools_antigenic_peaks", project_folder)
 
 if (!dir.exists(output_folder)) {

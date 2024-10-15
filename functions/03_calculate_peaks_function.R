@@ -15,12 +15,6 @@ determine_peaks <- function(main_folder, testing, sources, min_amount_of_peptide
     }
   }
   
-  if (testing == TRUE) {
-    project_folder <- sprintf("%s/test_data", main_folder)
-  } else {
-    project_folder <- sprintf("%s/chagastope_data", main_folder)
-  }
-
   global_statistics_file <- sprintf("%s/outputs/01_pools_normalized_data/global_statistics.tsv", project_folder)
   global_statistics <- fread(global_statistics_file, header = TRUE, sep = "\t", na.strings = NULL)
   cutoff <- global_statistics$mode + sd_multiplier_for_cutoff * global_statistics$sd
