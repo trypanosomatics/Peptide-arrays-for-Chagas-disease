@@ -1,3 +1,6 @@
+#!/usr/bin/env Rscript
+# Shebang, interpreter for executable
+
 #### CONFIG for running in terminal####
 args <- commandArgs(trailingOnly = TRUE)
 
