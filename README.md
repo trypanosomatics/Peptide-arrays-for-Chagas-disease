@@ -3,6 +3,7 @@
 
 ## Linux (Bash ejecutable)
 ./script.R
+o sudo ./script.R (si hay problema de permisos para la instalación de librerías)
 Ej: ./03_calculate_peaks.R --main_folder /ruta/a/folder --testing FALSE --sources AR,BO,BR --min_amount_of_peptides_in_peak 3
 
 

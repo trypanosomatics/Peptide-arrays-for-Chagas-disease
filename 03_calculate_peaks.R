@@ -51,7 +51,7 @@ if (!dir.exists(profile_data_folder)) {
   dir.create(profile_data_folder, recursive = TRUE)
 }
 
-profile_data_suffix <- "_smoothed_signals.tsv"
+profile_data_suffix <- "_smoothed.tsv"
 
 #### Aux function path ####
 functions_folder <- sprintf("%s/functions", main_folder)
