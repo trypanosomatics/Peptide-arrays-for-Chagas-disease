@@ -1,5 +1,13 @@
 #!/usr/bin/env Rscript
 
+#### PREPARATION STEPS ####
+## You can run this code as it is to process a small subset of proteins, or you can follow these next steps to analyze the entire dataset.
+
+## 1. Make sure you have run all previous codes
+## 2. Set the "testing" variable in the config below to FALSE, or run this code with the "-test F" argument
+## 3. If you are running this code in Rstudio, set the "main_folder" variable in the config below to the folder containing this code
+
+
 #### CONFIG for running in terminal####
 args <- commandArgs(trailingOnly = TRUE)
 
