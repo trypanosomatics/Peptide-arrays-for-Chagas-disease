@@ -11,16 +11,16 @@ if (!require(preprocessCore, quietly = TRUE)) {
   library(preprocessCore) #quantile.normalization
 }
 
-#### Function ####
+#### AUXILIAR FUNCTIONS ####
+calculateMode <- function(x, decimals = 0) {
+  x <- round(x, decimals)
+  ux <- unique(x)
+  ux[which.max(tabulate(match(x, ux)))]
+}
+
+
+#### MAIN FUNCTION ####
 normalize_serums <- function(main_folder, testing, sources) {
-  
-  #### AUXILIAR FUNCTIONS ####
-  calculateMode <- function(x, decimals = 0) {
-    x <- round(x, decimals)
-    ux <- unique(x)
-    ux[which.max(tabulate(match(x, ux)))]
-  }
-  
   
   #### NORMALIZE ALL DATA ####
   #Get data
