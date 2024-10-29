@@ -10,6 +10,7 @@ if (!require(zoo, quietly = TRUE)) {
   library(zoo)
 }
 
+
 #### AUXILIARY FUNCTIONS ####
 smoothVector <- function(vector, median_window_size, mean_window_size, borders) {
   # borders can be "repeat" or "zeros"
@@ -111,7 +112,7 @@ smooth_data <- function(design_data_file, design_group, normalized_data_folder, 
                                      "sequence", "truncated"))
       
       # Save data
-      output_file <- sprintf("%s/%s_%s_smoothed.tsv", output_folder, source_for, type_for)
+      output_file <- sprintf("%s/%s_%s_%s", output_folder, source_for, type_for, output_suffix)
       write.table(normalized_data, file = output_file, col.names = TRUE, row.names = FALSE, sep = "\t", quote = TRUE)
     }
   }
