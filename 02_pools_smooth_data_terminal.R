@@ -11,7 +11,7 @@ sources <- c("AR", "BO", "BR", "CO", "MX", "US", "LE")
 smoothing_median_window_size <- 3
 smoothing_mean_window_size <- 0
 smooth_borders_option <- "zeros"
-output_suffix <- "_smoothed.tsv"
+output_suffix <- ""
 
 if (length(args) > 0) {
     for (i in seq_along(args)) {
@@ -32,7 +32,7 @@ if (length(args) > 0) {
                 } else if (args[i] == "--main_folder") {
                     main_folder <- args[i + 1]
                 } else if (args[i] == "--output_suffix") {
-                    output_suffix <- args[i + 1]
+                    output_suffix <- paste0(args[i + 1], "_")
                 }
             } else {
                 warning(sprintf("Missing value for argument: %s", args[i]))
