@@ -63,8 +63,6 @@ if (!dir.exists(output_folder)) {
   dir.create(output_folder, recursive = TRUE)
 }
 
-output_file <- sprintf("%s/pools_peaks_cutoff4SD_2pep.tsv", output_folder)
-
 profile_data_folder <- sprintf("%s/outputs/02_pools_smoothed_data", project_folder)
 
 if (!dir.exists(profile_data_folder)) {

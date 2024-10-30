@@ -437,7 +437,8 @@ determine_peaks <- function(main_folder, testing, sources, min_amount_of_peptide
                                   "peptide_amount"))
   
   output_peak_data <- output_peak_data[order(-type, protein, nchar(source), source)]
-  
+  output_file <- sprintf("%s/pools_peaks_cutoff%sSD_%spep.tsv", output_folder, sd_multiplier_for_cutoff, min_amount_of_peptides_in_peak)
+
   #### Write Output
   write.table(output_peak_data, file = output_file, col.names = T, row.names = F, sep = "\t", quote = T)
   
