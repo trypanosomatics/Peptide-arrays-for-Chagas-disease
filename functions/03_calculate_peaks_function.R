@@ -5,7 +5,7 @@ if (!require(data.table, quietly = TRUE)) {
   library(data.table)
 }
 
-determine_peaks <- function(main_folder, testing, sources, min_amount_of_peptides_in_peak, sd_multiplier_for_cutoff = NULL) {
+determine_peaks <- function(main_folder, testing, sources, min_amount_of_peptides_in_peak, sd_multiplier_for_cutoff = NULL, profile_data_suffix) {
   
   if (is.null(sd_multiplier_for_cutoff)) {
     if (testing == TRUE) {
@@ -114,7 +114,7 @@ determine_peaks <- function(main_folder, testing, sources, min_amount_of_peptide
     for (type_for in types) {
       # type_for <- types[1]
       
-      profile_data_file <- sprintf("%s/%s_%s%s", profile_data_folder, source_for, type_for, profile_data_suffix)
+      profile_data_file <- sprintf("%s/%s_%s_%ssmoothed.tsv", profile_data_folder, source_for, type_for, profile_data_suffix)
       profile_data <- fread(profile_data_file, header = TRUE, sep = "\t", na.strings = NULL)
       
       if (output_initialized == F) {

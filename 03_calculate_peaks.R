@@ -18,7 +18,7 @@ sources <- c("AR", "BO", "BR", "CO", "MX", "US")
 min_amount_of_peptides_in_peak <- 2
 # sd_multiplier_for_cutoff determines cutoff as: mode + sd_multiplier_for_cutoff * sd
 sd_multiplier_for_cutoff <- NULL #as default is 1 in testing and 4 in chagastope_data
-
+profile_data_suffix <- "smoothed.tsv"
 
 for (i in seq(1, length(args), by = 2)) {
   if (args[i] == "--main_folder") {
@@ -36,7 +36,19 @@ for (i in seq(1, length(args), by = 2)) {
   if (args[i] == "--sd_multiplier_for_cutoff") {
     sd_multiplier_for_cutoff <- as.numeric(args[i + 1])
   }
+  if (args[i] == "--profile_data_suffix") {
+     profile_data_suffix <- paste0(args[i + 1], "_")
+  }
 }
+
+# Print values 
+cat("Main folder:", main_folder, "\n")
+cat("Testing:", testing, "\n")
+cat("Sources:", paste(sources, collapse = ", "), "\n")
+cat("Min amount of peptides in peak:", min_amount_of_peptides_in_peak, "\n")
+cat("Sd multiplier for cutoff:", sd_multiplier_for_cutoff, "\n")
+cat("Profile data suffix:", profile_data_suffix, "\n")
+
 
 #### PATH CONFIG ####
 if (testing == TRUE) {
@@ -59,8 +71,6 @@ if (!dir.exists(profile_data_folder)) {
   dir.create(profile_data_folder, recursive = TRUE)
 }
 
-profile_data_suffix <- "_smoothed.tsv"
-
 #### Aux function path ####
 functions_folder <- sprintf("%s/functions", main_folder)
 functions_file <- sprintf("%s/03_calculate_peaks_function.R", functions_folder)
@@ -80,4 +90,4 @@ combined_mean_signal_decimals <- 2
 #### CALL MAIN FUNCTION ####
 source(functions_file)
 
-determine_peaks(main_folder, testing, sources, min_amount_of_peptides_in_peak, sd_multiplier_for_cutoff)
+determine_peaks(main_folder, testing, sources, min_amount_of_peptides_in_peak, sd_multiplier_for_cutoff, profile_data_suffix)
