@@ -11,18 +11,24 @@
 #### WARNINGS ####
 ## This code uses large amounts of RAM
 
-
 #### CONFIG for running in terminal####
 args <- commandArgs(trailingOnly = TRUE)
 
-if (length(args) == 0) {
-  main_folder <- "." #Default value
-  testing <- TRUE #Default value
-  sources <- c("AR", "BO", "BR", "CO", "MX", "US", "LE") #Default value
-} else {
-  main_folder <- args[1] # first argument
-  testing <- as.logical(args[2]) # second argument (TRUE o FALSE)
-  sources <- unlist(strsplit(args[3], ",")) # third argument (comma-separated list of sources)
+# Default values
+main_folder <- "."
+testing <- TRUE
+sources <- c("AR", "BO", "BR", "CO", "MX", "US", "LE")
+
+for (i in seq(1, length(args), by = 2)) {
+  if (args[i] == "--main_folder") {
+    main_folder <- args[i + 1]
+  }
+  if (args[i] == "--testing") {
+    testing <- as.logical(args[i + 1])
+  }
+  if (args[i] == "--sources") {
+    sources <- unlist(strsplit(args[i + 1], ","))
+  }
 }
 
 setwd(main_folder)
