@@ -7,7 +7,6 @@ args <- commandArgs(trailingOnly = TRUE)
 main_folder <- "."
 testing <- TRUE
 peaks_tag <- "4SD_2pep"
-output_suffix <- "4SD_2pep"
 
 # User values
 for (i in seq(1, length(args), by = 2)) {
@@ -24,6 +23,8 @@ for (i in seq(1, length(args), by = 2)) {
   output_suffix <- args[i + 1]
   }
 }
+
+output_suffix <- peaks_tag
 
 #### OTHER PARAMETERS#### 
 #In this design, the length of the peptides is 16 residues and the overlap is 12, it cannot be changed

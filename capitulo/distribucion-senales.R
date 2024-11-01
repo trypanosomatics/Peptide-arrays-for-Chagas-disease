@@ -69,16 +69,18 @@ all_data_smoothed$type <- as.factor(all_data_smoothed$type)
 all_data_smoothed$source <- as.factor(all_data_smoothed$source)
 rm(data, file, files, path_to_files)
 
-#### Plot ####
+#### Plot general, toda las sources juntas ####
 palette_neutral <- c("#588b8b", "#ef4043", "#ffd5c2", "#f28f3b", "#c8553d", "#2d3047", "#93b7be")
 
 raw_plot <- ggplot(all_data_raw, aes(x = type, y = Signal)) +
   geom_jitter(aes(colour = source), alpha = 0.6)+
+  geom_violin(alpha = 0.6)+
   scale_color_manual(values = palette_neutral)+
-  geom_boxplot(alpha = 0.6)+
+  #geom_boxplot(alpha = 0.6)+
   labs(title = "Distribution of Signal Intensities - Raw data",
        x = "Signal Intensity",
        y = "Frequency") +
+  ylim(c(0,70000))+
   theme_minimal()+
   theme(legend.position = "none")
 raw_plot
@@ -86,10 +88,12 @@ raw_plot
 normalized_plot <- ggplot(all_data_normalized, aes(x = type, y = Signal)) +
   geom_jitter(aes(colour = source), alpha = 0.6)+
   scale_color_manual(values = palette_neutral)+
-  geom_boxplot(alpha = 0.6)+
+  geom_violin(alpha = 0.6)+
+  #geom_boxplot(alpha = 0.6)+
   labs(title = "Distribution of Signal Intensities - Normalized data",
        x = "Signal Intensity",
        y = "Frequency") +
+  ylim(c(0,70000))+
   theme_minimal()+
   theme(legend.position = "none")
 normalized_plot
@@ -97,11 +101,82 @@ normalized_plot
 smoothed_plot <- ggplot(all_data_smoothed, aes(x = type, y = mean_smoothed_signal)) +
   geom_jitter(aes(colour = source), alpha = 0.5)+
   scale_color_manual(values = palette_neutral)+
-  geom_boxplot(alpha = 0.6)+
+  geom_violin(alpha = 0.6)+
+  #geom_boxplot(alpha = 0.6)+
   labs(title = "Distribution of Signal Intensities - Smoothed data",
        x = "Signal Intensity",
        y = "Frequency") +
+  ylim(c(0,70000))+
   theme_minimal()
 smoothed_plot
 
 raw_plot + normalized_plot + smoothed_plot + plot_layout(ncol = 3)
+
+#### Plot sources por separado ####
+NE_raw <- ggplot(all_data_raw[all_data_raw$type=="NE",], aes(x = source, y = Signal)) +
+  geom_jitter(aes(colour = source), alpha = 0.6) +
+  geom_violin(alpha = 0.6) +
+  scale_color_manual(values = palette_neutral) +
+  labs(title = "Distribution of Signal Intensities - Raw data",
+       x = "Source",
+       y = "Signal Intensity") +
+  ylim(c(0, 40000)) +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+PO_raw <- ggplot(all_data_raw[all_data_raw$type=="PO",], aes(x = source, y = Signal)) +
+  geom_jitter(aes(colour = source), alpha = 0.6) +
+  geom_violin(alpha = 0.6) +
+  scale_color_manual(values = palette_neutral) +
+  labs(title = "Distribution of Signal Intensities - Raw data",
+       x = "Source",
+       y = "Signal Intensity") +
+  ylim(c(0, 70000)) +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+NE_norm <- ggplot(all_data_normalized[all_data_normalized$type=="NE",], aes(x = source, y = Signal)) +
+  geom_jitter(aes(colour = source), alpha = 0.6) +
+  geom_violin(alpha = 0.6) +
+  scale_color_manual(values = palette_neutral) +
+  labs(title = "Distribution of Signal Intensities - Normalized data",
+       x = "Source",
+       y = "Signal Intensity") +
+  ylim(c(0, 40000)) +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+PO_norm <- ggplot(all_data_normalized[all_data_normalized$type=="PO",], aes(x = source, y = Signal)) +
+  geom_jitter(aes(colour = source), alpha = 0.6) +
+  geom_violin(alpha = 0.6) +
+  scale_color_manual(values = palette_neutral) +
+  labs(title = "Distribution of Signal Intensities - Normalized data",
+       x = "Source",
+       y = "Signal Intensity") +
+  ylim(c(0, 70000)) +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+NE_smooth <- ggplot(all_data_smoothed[all_data_smoothed$type=="NE",], aes(x = source, y = mean_smoothed_signal)) +
+  geom_jitter(aes(colour = source), alpha = 0.6) +
+  geom_violin(alpha = 0.6) +
+  scale_color_manual(values = palette_neutral) +
+  labs(title = "Distribution of Signal Intensities - Smoothed data",
+       x = "Source",
+       y = "Signal Intensity") +
+  ylim(c(0, 40000)) +
+  theme_minimal()
+
+PO_smooth <- ggplot(all_data_smoothed[all_data_smoothed$type=="PO",], aes(x = source, y = mean_smoothed_signal)) +
+  geom_jitter(aes(colour = source), alpha = 0.6) +
+  geom_violin(alpha = 0.6) +
+  scale_color_manual(values = palette_neutral) +
+  labs(title = "Distribution of Signal Intensities - Smoothed data",
+       x = "Source",
+       y = "Signal Intensity") +
+  ylim(c(0, 70000)) +
+  theme_minimal()
+
+
+NE_raw + NE_norm + NE_smooth + plot_layout(ncol = 3)
+PO_raw + PO_norm + PO_smooth + plot_layout(ncol = 3)
