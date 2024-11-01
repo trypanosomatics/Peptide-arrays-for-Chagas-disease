@@ -5,7 +5,7 @@ if (!require(data.table, quietly = TRUE)) {
   library(data.table)
 }
 
-determine_peaks <- function(main_folder, testing, sources, min_amount_of_peptides_in_peak, sd_multiplier_for_cutoff = NULL, profile_data_suffix) {
+determine_peaks <- function(main_folder, testing, sources, min_num_of_peptides_in_peak, sd_multiplier_for_cutoff = NULL, profile_data_suffix) {
   
   if (is.null(sd_multiplier_for_cutoff)) {
     if (testing == TRUE) {
@@ -144,7 +144,7 @@ determine_peaks <- function(main_folder, testing, sources, min_amount_of_peptide
   peak_data <- peak_data[order(protein, source, fake_peak_start)]
   
   ## Filter peaks by width
-  peak_data <- peak_data[peptide_amount >= min_amount_of_peptides_in_peak]
+  peak_data <- peak_data[peptide_amount >= min_num_of_peptides_in_peak]
   
   ## Prepare the data to calculate the real starts later on
   real_starts <- unique(all_profile_data[, .(protein, start)])
@@ -319,7 +319,7 @@ determine_peaks <- function(main_folder, testing, sources, min_amount_of_peptide
               setcolorder(overlapping_peak_data, colnames(overlapping_peaks_to_parse))
               
               #Filter peaks by width
-              overlapping_peak_data <- overlapping_peak_data[peptide_amount >= min_amount_of_peptides_in_peak]
+              overlapping_peak_data <- overlapping_peak_data[peptide_amount >= min_num_of_peptides_in_peak]
               
               #Add the overlapping peak to the peak data
               if (overlapping_peak_data[, .N] > 0) {
@@ -437,7 +437,7 @@ determine_peaks <- function(main_folder, testing, sources, min_amount_of_peptide
                                   "peptide_amount"))
   
   output_peak_data <- output_peak_data[order(-type, protein, nchar(source), source)]
-  output_file <- sprintf("%s/pools_peaks_cutoff%sSD_%spep.tsv", output_folder, sd_multiplier_for_cutoff, min_amount_of_peptides_in_peak)
+  output_file <- sprintf("%s/pools_peaks_cutoff%sSD_%spep.tsv", output_folder, sd_multiplier_for_cutoff, min_num_of_peptides_in_peak)
 
   #### Write Output
   write.table(output_peak_data, file = output_file, col.names = T, row.names = F, sep = "\t", quote = T)
