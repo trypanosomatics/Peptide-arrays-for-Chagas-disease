@@ -57,4 +57,4 @@ functions_file <- sprintf("%s/07_alanine_scan_analisis_function.R", functions_fo
 #### CALL MAIN FUNCTION ####
 source(functions_file)
 
-alanine_scan(main_folder, testing, selected protein)
+alanine_scan(main_folder, testing, selected_protein)
