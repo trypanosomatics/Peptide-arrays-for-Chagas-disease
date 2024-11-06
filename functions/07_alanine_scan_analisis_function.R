@@ -18,7 +18,7 @@ if (!require(reshape2, quietly = TRUE)) {
 }
 
 #### MAIN FUNCTION ####
-alanine_scan <- function(main_folder, testing) {
+alanine_scan <- function(main_folder, testing, selected_protein) {
 
   ### estimateSignalChanges ###
   ## This function estimates the signal change per residue and for each sample analyzed in one protein.

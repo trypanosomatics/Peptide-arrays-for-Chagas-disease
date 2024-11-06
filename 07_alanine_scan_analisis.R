@@ -27,6 +27,9 @@ for (i in seq(1, length(args), by = 2)) {
   if (args[i] == "--testing") {
     testing <- as.logical(args[i + 1])
   }
+  if (args[i] == "--selected_protein") {
+    selected_protein <- paste0("\"", args[i + 1], "\"")
+  }
 }
 
 #### OTHER PARAMETERS ####  
@@ -54,4 +57,4 @@ functions_file <- sprintf("%s/07_alanine_scan_analisis_function.R", functions_fo
 #### CALL MAIN FUNCTION ####
 source(functions_file)
 
-alanine_scan(main_folder, testing)
+alanine_scan(main_folder, testing, selected protein)
