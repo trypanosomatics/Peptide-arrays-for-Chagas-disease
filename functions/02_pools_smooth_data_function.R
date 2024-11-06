@@ -62,7 +62,7 @@ smoothVector <- function(vector, median_window_size, mean_window_size, borders) 
 #### MAIN FUNCTION ####
 #### SMOOTH DATA ####
 
-smooth_data <- function(design_data_file, design_group, normalized_data_folder, normalized_data_suffix, sources, smoothing_median_window_size, smoothing_mean_window_size, smooth_borders_option, output_type_order, output_signal_mean_decimals, output_signal_sd_decimals, output_suffix) {
+smooth_data <- function(design_data_file, design_group, normalized_data_folder, normalized_data_suffix, sources, smooth_median_window_size, smooth_mean_window_size, smooth_borders_option, output_type_order, output_signal_mean_decimals, output_signal_sd_decimals, output_suffix) {
   # Get data
   design_data <- fread(design_data_file, header = TRUE, sep = "\t", na.strings = NULL)
   design_data <- design_data[group == design_group]
@@ -87,8 +87,8 @@ smooth_data <- function(design_data_file, design_group, normalized_data_folder, 
       
       # Smooth the signal
       smoothed_normalized_data_aux <- normalized_data[, .(
-        smoothed_signal_r1 = smoothVector(get(sprintf("%s_%s_%s", source_for, type_for, "normalizedData_r1")), smoothing_median_window_size, smoothing_mean_window_size, smooth_borders_option),
-        smoothed_signal_r2 = smoothVector(get(sprintf("%s_%s_%s", source_for, type_for, "normalizedData_r2")), smoothing_median_window_size, smoothing_mean_window_size, smooth_borders_option)
+        smoothed_signal_r1 = smoothVector(get(sprintf("%s_%s_%s", source_for, type_for, "normalizedData_r1")), smooth_median_window_size, smooth_mean_window_size, smooth_borders_option),
+        smoothed_signal_r2 = smoothVector(get(sprintf("%s_%s_%s", source_for, type_for, "normalizedData_r2")), smooth_median_window_size, smooth_mean_window_size, smooth_borders_option)
       ), by = .(protein)]
       
       normalized_data$smoothed_signal_r1 <- smoothed_normalized_data_aux$smoothed_signal_r1
@@ -112,7 +112,7 @@ smooth_data <- function(design_data_file, design_group, normalized_data_folder, 
                                      "sequence", "truncated"))
       
       # Save data
-      output_file <- sprintf("%s/%s_%s_%s_smoothed.tsv", output_folder, source_for, type_for, output_suffix)
+      output_file <- sprintf("%s/%s_%s_%ssmoothed.tsv", output_folder, source_for, type_for, output_suffix)
       write.table(normalized_data, file = output_file, col.names = TRUE, row.names = FALSE, sep = "\t", quote = TRUE)
     }
   }

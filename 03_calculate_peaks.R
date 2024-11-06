@@ -15,7 +15,7 @@ args <- commandArgs(trailingOnly = TRUE)
 main_folder <- "."
 testing <- TRUE
 sources <- c("AR", "BO", "BR", "CO", "MX", "US")
-min_amount_of_peptides_in_peak <- 2
+min_num_of_peptides_in_peak <- 2
 # sd_multiplier_for_cutoff determines cutoff as: mode + sd_multiplier_for_cutoff * sd
 sd_multiplier_for_cutoff <- NULL #as default is 1 in testing and 4 in chagastope_data
 profile_data_suffix <- "smoothed.tsv"
@@ -30,8 +30,8 @@ for (i in seq(1, length(args), by = 2)) {
   if (args[i] == "--sources") {
     sources <- unlist(strsplit(args[i + 1], ","))
   }
-  if (args[i] == "--min_amount_of_peptides_in_peak") {
-    min_amount_of_peptides_in_peak <- as.numeric(args[i + 1])
+  if (args[i] == "--min_num_of_peptides_in_peak") {
+    min_num_of_peptides_in_peak <- as.numeric(args[i + 1])
   }
   if (args[i] == "--sd_multiplier_for_cutoff") {
     sd_multiplier_for_cutoff <- as.numeric(args[i + 1])
@@ -45,7 +45,7 @@ for (i in seq(1, length(args), by = 2)) {
 cat("Main folder:", main_folder, "\n")
 cat("Testing:", testing, "\n")
 cat("Sources:", paste(sources, collapse = ", "), "\n")
-cat("Min amount of peptides in peak:", min_amount_of_peptides_in_peak, "\n")
+cat("Min num of peptides in peak:", min_num_of_peptides_in_peak, "\n")
 cat("Sd multiplier for cutoff:", sd_multiplier_for_cutoff, "\n")
 cat("Profile data suffix:", profile_data_suffix, "\n")
 
@@ -88,4 +88,4 @@ combined_mean_signal_decimals <- 2
 #### CALL MAIN FUNCTION ####
 source(functions_file)
 
-determine_peaks(main_folder, testing, sources, min_amount_of_peptides_in_peak, sd_multiplier_for_cutoff, profile_data_suffix)
+determine_peaks(main_folder, testing, sources, min_num_of_peptides_in_peak, sd_multiplier_for_cutoff, profile_data_suffix)

@@ -40,8 +40,8 @@ sources <- c("AR", "BO", "BR", "CO", "MX", "US", "LE")
 
 types <- c("PO", "NE")
 
-smoothing_median_window_size <- 3
-smoothing_mean_window_size <- 0
+smooth_median_window_size <- 3
+smooth_mean_window_size <- 0
 smooth_borders_option <- "zeros"
 
 output_signal_mean_decimals <- 2
@@ -134,8 +134,8 @@ for (source_for in sources) {
         
         #Smooth the signal
         smoothed_normalized_data_aux <- normalized_data[, .(smoothed_signal = smoothVector(vector = signal,
-                                                                                           median_window_size = smoothing_median_window_size, 
-                                                                                           mean_window_size = smoothing_mean_window_size, 
+                                                                                           median_window_size = smooth_median_window_size, 
+                                                                                           mean_window_size = smooth_mean_window_size, 
                                                                                            borders = smooth_borders_option)),
                                                         by = .(source, type, replica, protein)]
         normalized_data$smoothed_signal <- smoothed_normalized_data_aux$smoothed_signal

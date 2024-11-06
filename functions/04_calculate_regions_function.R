@@ -98,7 +98,8 @@ processAntigenicRegions <- function(project_folder, extra_files_folder, peaks_ta
                                     chronic_peaks_min_peptide_length, chronic_peaks_border_peptide_amount, 
                                     detailed_region_output_file, summary_region_output_file) {
   
-  chronic_peaks_data_file <- sprintf("%s/outputs/03_pools_antigenic_peaks/pools_peaks_cutoff4SD_2pep.tsv", project_folder)
+  #pools_peaks_cutoffs5SD_2pep.tsv
+  chronic_peaks_data_file <- sprintf("%s/outputs/03_pools_antigenic_peaks/pools_peaks_cutoff%s.tsv", project_folder, peaks_tag)
   sylvio_fasta_data_file <- sprintf("%s/sylvio-x10-tritrypdb-5.Dec.2016-no-pseudo_SIMPLIFIED_TABBED.tsv", extra_files_folder)
   brener_fasta_data_file <- sprintf("%s/tcruzi-clbrener-tritrypdb-5.Dec.2016-no-pseudo_SIMPLIFIED_TABBED.tsv", extra_files_folder)
   
@@ -116,7 +117,7 @@ processAntigenicRegions <- function(project_folder, extra_files_folder, peaks_ta
                                   peaks_peptide_offset = chronic_peaks_peptide_offset,
                                   peaks_min_peptide_length = chronic_peaks_min_peptide_length,
                                   peaks_border_peptide_amount = chronic_peaks_border_peptide_amount,
-                                  peaks_tag = chronic_peaks_tag)
+                                  peaks_tag = peaks_tag)
   
   ## Calculate the region numbers
   region_data <- region_data[order(protein, start)]
