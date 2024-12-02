@@ -15,9 +15,7 @@ output_suffix <- ""
 
 if (length(args) > 0) {
     for (i in seq_along(args)) {
-        # Verificar que hay un argumento que comienza con "--"
         if (grepl("^--", args[i])) {
-            # Comprobar si el siguiente índice existe
             if (i + 1 <= length(args)) {
                 if (args[i] == "--sources") {
                     sources <- unlist(strsplit(args[i + 1], ","))

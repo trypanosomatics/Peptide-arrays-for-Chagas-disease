@@ -49,7 +49,6 @@ prepare_plot_data <- function(
   all_plot_data <- do.call(rbind, lapply(input_files, read.delim, stringsAsFactors = FALSE))
   
   # Filter by protein
-  #protein = "TCSYLVIO_001348"
   if (!is.null(protein)) {
     all_plot_data <- all_plot_data[all_plot_data$protein == protein, ]
     if (nrow(all_plot_data) == 0) {
@@ -99,32 +98,6 @@ plotProteinProfile_v3 <- function(plot_data, x_column_name, y_column_name, group
                                   show_errors = 0, error_min_column_name = "", error_max_column_name = "",
                                   show_legend = 0,
                                   fixed_scale = 0, fixed_scale_max = 0) {
-  #This version loses some funcionality, but makes sure that the dots and lines are overlapped correctly
-  
-  #### DEBUG
-  # plot_data = sub_sub_plot_data
-  # x_column_name ="start"
-  # y_column_name = "mean_smoothed_signal"
-  # group_column_name = "type"
-  # foreground_group = positive_serum_label
-  # background_group = negative_serum_label
-  # cutoffs_y = cutoffs_to_plot
-  # plot_title = plot_title
-  # x_label = "Peptide position"
-  # y_label = "Signal"
-  # legend_labels =  labels_aux
-  # line_colors = colors_aux
-  # manual_cutoff_color = c()
-  # manual_cutoff_type = c()
-  # manual_cutoff_size = c()
-  # show_errors = 1
-  # error_min_column_name = "error_min"
-  # error_max_column_name = "error_max"
-  # show_legend = 1
-  # fixed_scale = 1
-  # fixed_scale_max = max_plot
-  ####
-  
   geom_point_size <- 1.5
   
   geom_line_size <- 0.5
@@ -160,7 +133,6 @@ plotProteinProfile_v3 <- function(plot_data, x_column_name, y_column_name, group
                                 fixed_scale = fixed_scale, fixed_scale_max = fixed_scale_max)  
 }
 
-
 plotProteinProfileDetailed_v3 <- function(plot_data, x_column_name, y_column_name, group_column_name, foreground_group, background_group,
                                           cutoffs_y = c(),
                                           plot_title = "", x_label = "X", y_label = "Y",
@@ -172,11 +144,7 @@ plotProteinProfileDetailed_v3 <- function(plot_data, x_column_name, y_column_nam
                                           show_errors = 0, error_min_column_name = "", error_max_column_name = "", geom_errorbar_width = 1, geom_errorbar_size = 0.5,
                                           show_legend = 0, legend_x = 0.8, legend_y = 0.9, legend_text_size = 12, legend_element_width = 2, legend_element_height = 1.5,
                                           fixed_scale = 0, fixed_scale_max = 0) {
-  #This version I created to add the lines and dots for different groups in different
-  
   plot_data_aux <- plot_data
-  
-  ### This is a "trick" to unlink both data.tables, so the setnames doesn't change the name of the original one...
   plot_data_aux[1] <- plot_data_aux[1]
   
   setnames(plot_data_aux, x_column_name, "x_column")
@@ -244,7 +212,6 @@ plotProteinProfileDetailed_v3 <- function(plot_data, x_column_name, y_column_nam
   if (fixed_scale) {
     p <- addYScale(p = p, y_scale_max = fixed_scale_max)
   } else {
-    #If its a dynamic scale, check if it has an error or just use the max point
     if (show_errors) {
       p <- addYScale(p = p, y_scale_max = max(plot_data_aux$error_max_column))
     } else {
@@ -275,28 +242,7 @@ plotProteinProfileDetailed_v3 <- function(plot_data, x_column_name, y_column_nam
   
   p
 }
-# initializePlot <- function(plot_data, x_column, y_column, group_column, is_linetype_variable = 0) {
-#   if (is_linetype_variable) {
-#     p <- ggplot(plot_data, aes_string(x = x_column, y = y_column, color = group_column, linetype = group_column, fill = group_column))
-#   } else {
-#     p <- ggplot(plot_data, aes_string(x = x_column, y = y_column, color = group_column, fill = group_column))    
-#   }
-#   
-#   p
-# }
-# initializePlot_v2 <- function(plot_data, x_column, y_column, group_column, is_linetype_variable = 0, is_fill_variable = 0) {
-#   if (is_linetype_variable & is_fill_variable) {
-#     p <- ggplot(plot_data, aes_string(x = x_column, y = y_column, color = group_column, linetype = group_column, fill = group_column))
-#   } else if (is_linetype_variable) {
-#     p <- ggplot(plot_data, aes_string(x = x_column, y = y_column, color = group_column, linetype = group_column))
-#   } else if (is_fill_variable) {
-#     p <- ggplot(plot_data, aes_string(x = x_column, y = y_column, color = group_column, fill = group_column))
-#   } else {
-#     p <- ggplot(plot_data, aes_string(x = x_column, y = y_column, color = group_column))
-#   }
-#   
-#   p
-# }
+
 addFill <- function(p, fill_alpha) {
   if (fill_alpha > 0) {
     p <- p + geom_area(alpha = fill_alpha, position = "identity")
@@ -467,7 +413,6 @@ setYLabel <- function(p, y_label, y_axis_title_size = 0, y_axis_title_color = "b
 
 addManualColorScale <- function(p, line_colors, is_legend_visible = 1, legend_labels = c()) {
   if (length(line_colors) > 0) {
-    #If you don't have to show the legend you don't care about the labels
     if (is_legend_visible & (length(legend_labels) > 0)) {
       p <- p + scale_color_manual(values = line_colors,
                                   labels = legend_labels)
@@ -480,7 +425,6 @@ addManualColorScale <- function(p, line_colors, is_legend_visible = 1, legend_la
 }
 addManualLinetypeScale <- function(p, line_linetypes, is_legend_visible = 1, legend_labels = c()) {
   if (length(line_linetypes) > 0) {
-    #If you don't have to show the legend you don't care about the labels
     if (is_legend_visible & (length(legend_labels) > 0)) {
       p <- p + scale_linetype_manual(values = line_linetypes,
                                      labels = legend_labels)
@@ -598,7 +542,6 @@ addHorizontalLines <- function(p,
     ############################-
     #### CONFIGURE THE PLOT ####
     ############################-
-    ### PLOT SETTINGS
     
     neg_line_color = "#cc79a7"
     pos_line_color = "#0072b2"
@@ -642,23 +585,17 @@ addHorizontalLines <- function(p,
     pdf_height <- 21
     output_file <- sprintf("%s/%s_fixed_scale.pdf", output_folder, output_file_prefix)
     
-    #pdf(file = output_file, width = 28, height = 14) #initialized inside the loop to avoid first blank page
-    
     graphics.off()
     for (protein_for in proteins_to_plot) {
-      #protein_for <- proteins_to_plot[1]
       writeLines(sprintf("Plotting %s...", protein_for))
       
       sub_plot_data <- all_plot_data[protein == protein_for]
       
       plots <- list()
       for (source_i in 1:length(sources)) {
-        #source_i <- 3
         source_for <- sources[source_i]
         
         sub_sub_plot_data <- sub_plot_data[source == source_for]
-        
-        # Si no hay datos para esta fuente, continuar con la siguiente
         if (nrow(sub_sub_plot_data) == 0) {
           writeLines(sprintf("No data for source %s. Skipping...", source_for))
           next
@@ -667,7 +604,6 @@ addHorizontalLines <- function(p,
         sub_sub_plot_data[type == "PO", type := positive_serum_label]
         sub_sub_plot_data[type == "NE", type := negative_serum_label]
         
-        # plot_title <- sprintf("%s | %s", source_for, protein_for)
         plot_title <- source_for
         
         if (has_negative_data) {
@@ -706,7 +642,6 @@ addHorizontalLines <- function(p,
                                                   override.aes = list(shape = c(16, 16, NA), linetype = c("solid", "solid", "dashed"),
                                                                       size = c(2, 2, 1))))
           
-          #legend_aux <- extractLegend(p)
           if (source_i == 1 && nrow(fake_data) > 0) {
             legend_aux <- extractLegend(p)
           } else {
@@ -735,8 +670,7 @@ addHorizontalLines <- function(p,
         }
         plots[[source_i]] <- p
       }
-      #plots[[5]] <- legend_aux
-      # plots[[9]] <- nullGrob()
+      
       if (!is.null(legend_aux)) {
         plots[[length(plots) + 1]] <- legend_aux
       }
@@ -745,7 +679,6 @@ addHorizontalLines <- function(p,
       if (protein_for == proteins_to_plot[1]) {
         pdf(file = output_file, width = 28, height = 14)
       }
-      # do.call("grid.arrange", c(plots, ncol = 3))
       layout_aux <- rbind(c(1,2,5),
                           c(3,4,6))
       grid.arrange(grobs = plots, ncol = 4, layout_matrix = layout_aux)
