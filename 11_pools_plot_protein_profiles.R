@@ -12,6 +12,7 @@ protein <- NULL
 sd_multiplier_for_cutoff <- 4
 only_proteins_above <- 0
 only_proteins_below <- 0
+output_suffix <- NULL
 
 # User values
 if (length(args) == 0) {
@@ -29,7 +30,8 @@ if (length(args) == 0) {
       sources <- unlist(strsplit(args[i + 1], ",")) # Divide sources si se pasan como cadena separada por comas
     }
     if (args[i] == "--profile_data_suffix") {
-      profile_data_suffix <- args[i + 1]
+      profile_data_suffix <- paste0(args[i + 1], "_smoothed.tsv")
+      output_suffix <- args[i + 1]
     }
     if (args[i] == "--protein") {
       protein <- args[i + 1]
@@ -81,4 +83,5 @@ plot_proteins(project_folder = project_folder,
               protein = protein,
               only_proteins_above = only_proteins_above,
               only_proteins_below = only_proteins_below,
-              sd_multiplier_for_cutoff = sd_multiplier_for_cutoff)
+              sd_multiplier_for_cutoff = sd_multiplier_for_cutoff,
+              output_suffix = output_suffix)

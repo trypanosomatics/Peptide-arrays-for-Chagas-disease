@@ -34,7 +34,8 @@ prepare_plot_data <- function(
     output_folder, 
     sd_multiplier_for_cutoff, 
     only_proteins_above, 
-    only_proteins_below
+    only_proteins_below,
+    output_suffix
 ) {
   
   # LOAD THE DATA NECESSARY
@@ -75,14 +76,25 @@ prepare_plot_data <- function(
   index_data <- data.table(protein = proteins_to_plot)
   index_data[, page := .I]
   
-  if(is.null(protein)){
-    output_file_prefix <- sprintf("protein_profiles_cruzi_%sSD", sd_multiplier_for_cutoff)
+  output_file_prefix <- if (is.null(protein)) {
+    sprintf("protein_profiles_cruzi_%sSD", sd_multiplier_for_cutoff)
   } else {
-    output_file_prefix <- sprintf("protein_profiles_cruzi_%sSD_selected_proteins", sd_multiplier_for_cutoff)
+    sprintf("protein_profiles_cruzi_%sSD_selected_proteins", sd_multiplier_for_cutoff)
   }
   
-  write.table(index_data, file = sprintf("%s/%s_index.tsv", output_folder, output_file_prefix), 
-              col.names = T, row.names = F, sep = "\t", quote = T)
+  output_file_name <- if (is.null(output_suffix)) {
+    sprintf("%s/%s_index.tsv", output_folder, output_file_prefix)
+  } else {
+    sprintf("%s/%s_%s_index.tsv", output_folder, output_file_prefix, output_suffix)
+  }
+  
+  write.table(index_data, 
+              file = output_file_name, 
+              col.names = TRUE, 
+              row.names = FALSE, 
+              sep = "\t", 
+              quote = TRUE)
+  
   
   return(list(all_plot_data = all_plot_data, plot_order = plot_order, proteins_to_plot = proteins_to_plot))
 }  
@@ -253,9 +265,9 @@ addFill <- function(p, fill_alpha) {
 addLine <- function(p, geom_line_size, geom_line_linetype = "") {
   if (geom_line_size > 0) {
     if (geom_line_linetype != "") {
-      p <- p + geom_line(size = geom_line_size, linetype = geom_line_linetype)
+      p <- p + geom_line(linewidth = geom_line_size, linetype = geom_line_linetype)
     } else {
-      p <- p + geom_line(size = geom_line_size)
+      p <- p + geom_line(linewidth = geom_line_size)
     }
   }
   
@@ -264,9 +276,9 @@ addLine <- function(p, geom_line_size, geom_line_linetype = "") {
 addLineAndPoint <- function(p, geom_line_size, geom_line_linetype = "", geom_point_size) {
   if (geom_line_size > 0 & geom_point_size > 0) {
     if (geom_line_linetype != "") {
-      p <- p + geom_line(size = geom_line_size, linetype = geom_line_linetype) + geom_point(size = geom_point_size)
+      p <- p + geom_line(linewidth = geom_line_size, linetype = geom_line_linetype) + geom_point(size = geom_point_size)
     } else {
-      p <- p + geom_line(size = geom_line_size) + geom_point(size = geom_point_size)
+      p <- p + geom_line(linewidth = geom_line_size) + geom_point(size = geom_point_size)
     }
   }
   
@@ -319,7 +331,7 @@ formatAxis <- function(p,
     p <- p + theme(axis.ticks = element_blank())
   }
   if (axis_line_size > 0) {
-    p <- p + theme(axis.line = element_line(size = axis_line_size, colour = axis_line_color))
+    p <- p + theme(axis.line = element_line(linewidth = axis_line_size, colour = axis_line_color))
   } else {
     p <- p + theme(axis.line = element_blank())
   } 
@@ -332,17 +344,17 @@ formatBackground <- function(p,
                              panel_background_size, panel_background_color = "black",
                              aspect_ratio = 1/1) {
   if (panel_grid_major_size > 0) {
-    p <- p + theme(panel.grid.major = element_line(size = panel_grid_major_size, colour = panel_grid_major_color))
+    p <- p + theme(panel.grid.major = element_line(linewidth = panel_grid_major_size, colour = panel_grid_major_color))
   } else {
     p <- p + theme(panel.grid.major = element_blank())
   }
   if (panel_grid_minor_size > 0) {
-    p <- p + theme(panel.grid.minor = element_line(size = panel_grid_minor_size, colour = panel_grid_minor_color))
+    p <- p + theme(panel.grid.minor = element_line(linewidth = panel_grid_minor_size, colour = panel_grid_minor_color))
   } else {
     p <- p + theme(panel.grid.minor = element_blank())
   }
   if (panel_background_size > 0) {
-    p <- p + theme(panel.background = element_rect(size = panel_background_size, colour = panel_background_color))
+    p <- p + theme(panel.background = element_rect(linewidth = panel_background_size, colour = panel_background_color))
   } else {
     p <- p + theme(panel.border = element_blank(),
                    panel.background = element_blank())
@@ -512,178 +524,186 @@ addHorizontalLines <- function(p,
 #######################-
 #### MAIN FUNCTION ####-
 #######################
-  plot_proteins = function(project_folder,
-                           input_folder,
-                           design_file,
-                           sources,
-                           profile_data_suffix,
-                           output_folder,
-                           protein,
-                           only_proteins_above,
-                           only_proteins_below,
-                           sd_multiplier_for_cutoff) {
-    
-    plot_data_result <- prepare_plot_data(
-      project_folder = project_folder,
-      input_folder = input_folder,
-      protein = protein,
-      profile_data_suffix = profile_data_suffix,
-      sources = sources,
-      output_folder = output_folder,
-      sd_multiplier_for_cutoff = sd_multiplier_for_cutoff,
-      only_proteins_above = only_proteins_above,
-      only_proteins_below = only_proteins_below
-    )
-    
-    all_plot_data <- plot_data_result$all_plot_data
-    plot_order <- plot_data_result$plot_order
-    proteins_to_plot <- plot_data_result$proteins_to_plot
+plot_proteins = function(project_folder,
+                         input_folder,
+                         design_file,
+                         sources,
+                         profile_data_suffix,
+                         output_folder,
+                         protein,
+                         only_proteins_above,
+                         only_proteins_below,
+                         sd_multiplier_for_cutoff,
+                         output_suffix) {
   
-    ############################-
-    #### CONFIGURE THE PLOT ####
-    ############################-
-    
-    neg_line_color = "#cc79a7"
-    pos_line_color = "#0072b2"
-    cutoff_color = "black"
-    
-    #Add the errors
-    all_plot_data[, error_max := mean_smoothed_signal + sd_smoothed_signal]
-    all_plot_data[, error_min := mean_smoothed_signal - sd_smoothed_signal]
-    
-    #Calculate the max value for the fixed scale
-    max_plot <- max(as.numeric(all_plot_data$error_max))
-    
-    #Aux Function for Plots
-    extractLegend <- function(gg) {
-      grobs <- ggplot_gtable(ggplot_build(gg))
-      foo <- which(sapply(grobs$grobs, function(x) x$name) == "guide-box")
-      grobs$grobs[[foo]]
-    }  
-    
-    # CALCULATE CUTOFF
-    normalization_global_statistics_file <- sprintf("%s/outputs/01_pools_normalized_data/global_statistics.tsv", project_folder)
-    normalization_global_statistics <- fread(normalization_global_statistics_file, header = TRUE, sep = "\t", na.strings = NULL)
-    
-    mode_aux <- normalization_global_statistics$mode
-    sd_aux <- normalization_global_statistics$sd
+  plot_data_result <- prepare_plot_data(
+    project_folder = project_folder,
+    input_folder = input_folder,
+    protein = protein,
+    profile_data_suffix = profile_data_suffix,
+    sources = sources,
+    output_folder = output_folder,
+    sd_multiplier_for_cutoff = sd_multiplier_for_cutoff,
+    only_proteins_above = only_proteins_above,
+    only_proteins_below = only_proteins_below,
+    output_suffix = output_suffix
+  )
   
-    # PLOT DATA
-    plot_data_folder <- input_folder
-    plot_data_file_suffix <- profile_data_suffix
-    
-    if(is.null(protein)){
-      output_file_prefix <- sprintf("protein_profiles_cruzi_%sSD", sd_multiplier_for_cutoff)
-    } else {
-      output_file_prefix <- sprintf("protein_profiles_cruzi_%sSD_selected_proteins", sd_multiplier_for_cutoff)
-    }
-    
-    has_negative_data <- 0
-    positive_serum_label <- "Positive serum"
-    negative_serum_label <- "Negative serum"
-    threshold_label <- "Threshold"
-    pdf_height <- 21
-    output_file <- sprintf("%s/%s_fixed_scale.pdf", output_folder, output_file_prefix)
-    
-    graphics.off()
-    for (protein_for in proteins_to_plot) {
-      writeLines(sprintf("Plotting %s...", protein_for))
-      
-      sub_plot_data <- all_plot_data[protein == protein_for]
-      
-      plots <- list()
-      for (source_i in 1:length(sources)) {
-        source_for <- sources[source_i]
-        
-        sub_sub_plot_data <- sub_plot_data[source == source_for]
-        if (nrow(sub_sub_plot_data) == 0) {
-          writeLines(sprintf("No data for source %s. Skipping...", source_for))
-          next
-        }
-        
-        sub_sub_plot_data[type == "PO", type := positive_serum_label]
-        sub_sub_plot_data[type == "NE", type := negative_serum_label]
-        
-        plot_title <- source_for
-        
-        if (has_negative_data) {
-          labels_aux <- c(negative_serum_label, positive_serum_label)
-          colors_aux = c(neg_line_color, pos_line_color)
-        } else {
-          labels_aux <- c(positive_serum_label)
-          colors_aux = c(pos_line_color)
-        }
-        
-        #Extract legend of the first plot
-        if (source_i == 1) {
-          fake_data <- data.table(x = c(1:6),
-                                  y = rnorm(6),
-                                  cat = c(positive_serum_label, positive_serum_label,
-                                          negative_serum_label, negative_serum_label,
-                                          threshold_label, threshold_label))
-          fake_data$cat <- factor(fake_data$cat, levels = c(positive_serum_label, negative_serum_label, threshold_label))
-          p <- ggplot(data = fake_data, aes(x = x, y = y, color = cat, linetype = cat))
-          p <- p + geom_point(size = 4) + geom_line(size = 2)
-          
-          p <- p + theme_bw()
-          p <- p + scale_color_manual(values = c(pos_line_color, neg_line_color, cutoff_color)) +
-            scale_linetype_manual(values = c("solid", "solid", "dashed"))
-          
-          legend_element_width <- 4
-          legend_element_height <- 3
-          p <- p + theme(legend.title = element_text(size = 24), legend.text = element_text(size = 20))
-          p <- p + theme(legend.text = element_text(size = 20))
-          p <- p + theme(legend.position = "right")
-          
-          p <- p + guides(colour = guide_legend(title = protein_for, keywidth = legend_element_width, keyheight = legend_element_height,
-                                                override.aes = list(shape = c(16, 16, NA), linetype = c("solid", "solid", "dashed"),
-                                                                    size = c(2, 2, 1))),
-                          linetype = guide_legend(title = protein_for, keywidth = legend_element_width, keyheight = legend_element_height,
-                                                  override.aes = list(shape = c(16, 16, NA), linetype = c("solid", "solid", "dashed"),
-                                                                      size = c(2, 2, 1))))
-          
-          if (source_i == 1 && nrow(fake_data) > 0) {
-            legend_aux <- extractLegend(p)
-          } else {
-            legend_aux <- NULL
-          }
-          
-        }
-        
-        cutoffs_to_plot <- mode_aux + sd_multiplier_for_cutoff * sd_aux
-        
-        #Plot
-        p <- plotProteinProfile_v3(plot_data = sub_sub_plot_data, x_column_name ="start", y_column_name = "mean_smoothed_signal", group_column_name = "type", foreground_group = positive_serum_label, background_group = negative_serum_label,
-                                   cutoffs_y = cutoffs_to_plot,
-                                   plot_title = plot_title, x_label = "Peptide position", y_label = "Signal",
-                                   legend_labels = labels_aux, line_colors = colors_aux,
-                                   manual_cutoff_color = c(cutoff_color), manual_cutoff_type = c(), manual_cutoff_size = c(),
-                                   show_errors = 1, error_min_column_name = "error_min", error_max_column_name = "error_max",
-                                   show_legend = 0,
-                                   fixed_scale = 1, fixed_scale_max = max_plot)
-        p <- p + theme(panel.grid.major = element_line(size = 0.1, colour = "gray92"))
-        p <- p + theme(panel.grid.minor = element_line(size = 0.1, colour = "gray92"))
-        p <- p + theme(plot.title = element_text(size = 20))
-        p <- p + theme(plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm"))
-        if (source_for == "LE") {
-          p <- p + theme(panel.background = element_rect(fill = "#fefbec"))
-        }
-        plots[[source_i]] <- p
-      }
-      
-      if (!is.null(legend_aux)) {
-        plots[[length(plots) + 1]] <- legend_aux
-      }
-      
-      #Initialize the PDF the first time
-      if (protein_for == proteins_to_plot[1]) {
-        pdf(file = output_file, width = 28, height = 14)
-      }
-      layout_aux <- rbind(c(1,2,5),
-                          c(3,4,6))
-      grid.arrange(grobs = plots, ncol = 4, layout_matrix = layout_aux)
-    }
-    dev.off()
-    graphics.off()
-    
+  all_plot_data <- plot_data_result$all_plot_data
+  plot_order <- plot_data_result$plot_order
+  proteins_to_plot <- plot_data_result$proteins_to_plot
+
+  ############################-
+  #### CONFIGURE THE PLOT ####
+  ############################-
+  
+  neg_line_color = "#cc79a7"
+  pos_line_color = "#0072b2"
+  cutoff_color = "black"
+  
+  #Add the errors
+  all_plot_data[, error_max := mean_smoothed_signal + sd_smoothed_signal]
+  all_plot_data[, error_min := mean_smoothed_signal - sd_smoothed_signal]
+  
+  #Calculate the max value for the fixed scale
+  max_plot <- max(as.numeric(all_plot_data$error_max))
+  
+  #Aux Function for Plots
+  extractLegend <- function(gg) {
+    grobs <- ggplot_gtable(ggplot_build(gg))
+    foo <- which(sapply(grobs$grobs, function(x) x$name) == "guide-box")
+    grobs$grobs[[foo]]
+  }  
+  
+  # CALCULATE CUTOFF
+  normalization_global_statistics_file <- sprintf("%s/outputs/01_pools_normalized_data/global_statistics.tsv", project_folder)
+  normalization_global_statistics <- fread(normalization_global_statistics_file, header = TRUE, sep = "\t", na.strings = NULL)
+  
+  mode_aux <- normalization_global_statistics$mode
+  sd_aux <- normalization_global_statistics$sd
+
+  # PLOT DATA
+  plot_data_folder <- input_folder
+  plot_data_file_suffix <- profile_data_suffix
+  
+  output_file_prefix <- if (is.null(protein)) {
+    sprintf("protein_profiles_cruzi_%sSD", sd_multiplier_for_cutoff)
+  } else {
+    sprintf("protein_profiles_cruzi_%sSD_selected_proteins", sd_multiplier_for_cutoff)
   }
+  
+  output_file_name <- if (is.null(output_suffix)) {
+    sprintf("%s/%s.pdf", output_folder, output_file_prefix)
+  } else {
+    sprintf("%s/%s_%s.pdf", output_folder, output_file_prefix, output_suffix)
+  }
+  
+  has_negative_data <- 0
+  positive_serum_label <- "Positive serum"
+  negative_serum_label <- "Negative serum"
+  threshold_label <- "Threshold"
+  pdf_height <- 21
+  output_file <- output_file_name
+  
+  graphics.off()
+  for (protein_for in proteins_to_plot) {
+    writeLines(sprintf("Plotting %s...", protein_for))
+    
+    sub_plot_data <- all_plot_data[protein == protein_for]
+    
+    plots <- list()
+    for (source_i in 1:length(sources)) {
+      source_for <- sources[source_i]
+      
+      sub_sub_plot_data <- sub_plot_data[source == source_for]
+      if (nrow(sub_sub_plot_data) == 0) {
+        writeLines(sprintf("No data for source %s. Skipping...", source_for))
+        next
+      }
+      
+      sub_sub_plot_data[type == "PO", type := positive_serum_label]
+      sub_sub_plot_data[type == "NE", type := negative_serum_label]
+      
+      plot_title <- source_for
+      
+      if (has_negative_data) {
+        labels_aux <- c(negative_serum_label, positive_serum_label)
+        colors_aux = c(neg_line_color, pos_line_color)
+      } else {
+        labels_aux <- c(positive_serum_label)
+        colors_aux = c(pos_line_color)
+      }
+      
+      #Extract legend of the first plot
+      if (source_i == 1) {
+        fake_data <- data.table(x = c(1:6),
+                                y = rnorm(6),
+                                cat = c(positive_serum_label, positive_serum_label,
+                                        negative_serum_label, negative_serum_label,
+                                        threshold_label, threshold_label))
+        fake_data$cat <- factor(fake_data$cat, levels = c(positive_serum_label, negative_serum_label, threshold_label))
+        p <- ggplot(data = fake_data, aes(x = x, y = y, color = cat, linetype = cat))
+        p <- p + geom_point(size = 4) + geom_line(linewidth = 2)
+        
+        p <- p + theme_bw()
+        p <- p + scale_color_manual(values = c(pos_line_color, neg_line_color, cutoff_color)) +
+          scale_linetype_manual(values = c("solid", "solid", "dashed"))
+        
+        legend_element_width <- 4
+        legend_element_height <- 3
+        p <- p + theme(legend.title = element_text(size = 24), legend.text = element_text(size = 20))
+        p <- p + theme(legend.text = element_text(size = 20))
+        p <- p + theme(legend.position = "right")
+        
+        p <- p + guides(colour = guide_legend(title = protein_for, keywidth = legend_element_width, keyheight = legend_element_height,
+                                              override.aes = list(shape = c(16, 16, NA), linetype = c("solid", "solid", "dashed"),
+                                                                  linewidth = c(2, 2, 1))),
+                        linetype = guide_legend(title = protein_for, keywidth = legend_element_width, keyheight = legend_element_height,
+                                                override.aes = list(shape = c(16, 16, NA), linetype = c("solid", "solid", "dashed"),
+                                                                    linewidth = c(2, 2, 1))))
+        
+        if (source_i == 1 && nrow(fake_data) > 0) {
+          legend_aux <- extractLegend(p)
+        } else {
+          legend_aux <- NULL
+        }
+        
+      }
+      
+      cutoffs_to_plot <- mode_aux + sd_multiplier_for_cutoff * sd_aux
+      
+      #Plot
+      p <- plotProteinProfile_v3(plot_data = sub_sub_plot_data, x_column_name ="start", y_column_name = "mean_smoothed_signal", group_column_name = "type", foreground_group = positive_serum_label, background_group = negative_serum_label,
+                                 cutoffs_y = cutoffs_to_plot,
+                                 plot_title = plot_title, x_label = "Peptide position", y_label = "Signal",
+                                 legend_labels = labels_aux, line_colors = colors_aux,
+                                 manual_cutoff_color = c(cutoff_color), manual_cutoff_type = c(), manual_cutoff_size = c(),
+                                 show_errors = 1, error_min_column_name = "error_min", error_max_column_name = "error_max",
+                                 show_legend = 0,
+                                 fixed_scale = 1, fixed_scale_max = max_plot)
+      p <- p + theme(panel.grid.major = element_line(linewidth = 0.1, colour = "gray92"))
+      p <- p + theme(panel.grid.minor = element_line(linewidth = 0.1, colour = "gray92"))
+      p <- p + theme(plot.title = element_text(size = 20))
+      p <- p + theme(plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm"))
+      if (source_for == "LE") {
+        p <- p + theme(panel.background = element_rect(fill = "#fefbec"))
+      }
+      plots[[source_i]] <- p
+    }
+    
+    if (!is.null(legend_aux)) {
+      plots[[length(plots) + 1]] <- legend_aux
+    }
+    
+    #Initialize the PDF the first time
+    if (protein_for == proteins_to_plot[1]) {
+      pdf(file = output_file, width = 28, height = 14)
+    }
+    layout_aux <- rbind(c(1,2,5),
+                        c(3,4,6))
+    grid.arrange(grobs = plots, ncol = 4, layout_matrix = layout_aux)
+  }
+  dev.off()
+  graphics.off()
+  
+}
