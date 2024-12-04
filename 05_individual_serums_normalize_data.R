@@ -72,4 +72,4 @@ functions_file <- sprintf("%s/05_individual_serums_normalize_data_function.R", f
 #### CALL MAIN FUNCTION ####
 source(functions_file)
 
-normalize_serums(main_folder, testing, sources)
+normalize_serums(raw_data_folder, output_folder, testing, sources)

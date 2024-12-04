@@ -20,7 +20,7 @@ calculateMode <- function(x, decimals = 0) {
 
 
 #### MAIN FUNCTION ####
-normalize_serums <- function(main_folder, testing, sources) {
+normalize_serums <- function(raw_data_folder, output_folder, sources) {
   
   #### NORMALIZE ALL DATA ####
   #Get data
