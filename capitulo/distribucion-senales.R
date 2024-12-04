@@ -114,8 +114,9 @@ raw_plot + normalized_plot + smoothed_plot + plot_layout(ncol = 3)
 
 #### Plot sources por separado ####
 NE_raw <- ggplot(all_data_raw[all_data_raw$type=="NE",], aes(x = source, y = Signal)) +
-  geom_jitter(aes(colour = source), alpha = 0.6) +
-  geom_violin(alpha = 0.6) +
+  geom_jitter(aes(colour = source), alpha = 0.3) +
+  #geom_violin(alpha = 0.6) +
+  geom_boxplot()+
   scale_color_manual(values = palette_neutral) +
   labs(title = "Distribution of Signal Intensities - Raw data",
        x = "Source",
@@ -125,8 +126,9 @@ NE_raw <- ggplot(all_data_raw[all_data_raw$type=="NE",], aes(x = source, y = Sig
   theme(legend.position = "none")
 
 PO_raw <- ggplot(all_data_raw[all_data_raw$type=="PO",], aes(x = source, y = Signal)) +
-  geom_jitter(aes(colour = source), alpha = 0.6) +
-  geom_violin(alpha = 0.6) +
+  geom_jitter(aes(colour = source), alpha = 0.3) +
+  #geom_violin(alpha = 0.6) +
+  geom_boxplot()+
   scale_color_manual(values = palette_neutral) +
   labs(title = "Distribution of Signal Intensities - Raw data",
        x = "Source",
@@ -136,8 +138,9 @@ PO_raw <- ggplot(all_data_raw[all_data_raw$type=="PO",], aes(x = source, y = Sig
   theme(legend.position = "none")
 
 NE_norm <- ggplot(all_data_normalized[all_data_normalized$type=="NE",], aes(x = source, y = Signal)) +
-  geom_jitter(aes(colour = source), alpha = 0.6) +
-  geom_violin(alpha = 0.6) +
+  geom_jitter(aes(colour = source), alpha = 0.3) +
+  #geom_violin(alpha = 0.6) +
+  geom_boxplot()+
   scale_color_manual(values = palette_neutral) +
   labs(title = "Distribution of Signal Intensities - Normalized data",
        x = "Source",
@@ -147,8 +150,9 @@ NE_norm <- ggplot(all_data_normalized[all_data_normalized$type=="NE",], aes(x = 
   theme(legend.position = "none")
 
 PO_norm <- ggplot(all_data_normalized[all_data_normalized$type=="PO",], aes(x = source, y = Signal)) +
-  geom_jitter(aes(colour = source), alpha = 0.6) +
-  geom_violin(alpha = 0.6) +
+  geom_jitter(aes(colour = source), alpha = 0.3) +
+  #geom_violin(alpha = 0.6) +
+  geom_boxplot()+
   scale_color_manual(values = palette_neutral) +
   labs(title = "Distribution of Signal Intensities - Normalized data",
        x = "Source",
@@ -158,8 +162,9 @@ PO_norm <- ggplot(all_data_normalized[all_data_normalized$type=="PO",], aes(x = 
   theme(legend.position = "none")
 
 NE_smooth <- ggplot(all_data_smoothed[all_data_smoothed$type=="NE",], aes(x = source, y = mean_smoothed_signal)) +
-  geom_jitter(aes(colour = source), alpha = 0.6) +
-  geom_violin(alpha = 0.6) +
+  geom_jitter(aes(colour = source), alpha = 0.3) +
+  #geom_violin(alpha = 0.6) +
+  geom_boxplot()+
   scale_color_manual(values = palette_neutral) +
   labs(title = "Distribution of Signal Intensities - Smoothed data",
        x = "Source",
@@ -168,8 +173,9 @@ NE_smooth <- ggplot(all_data_smoothed[all_data_smoothed$type=="NE",], aes(x = so
   theme_minimal()
 
 PO_smooth <- ggplot(all_data_smoothed[all_data_smoothed$type=="PO",], aes(x = source, y = mean_smoothed_signal)) +
-  geom_jitter(aes(colour = source), alpha = 0.6) +
-  geom_violin(alpha = 0.6) +
+  geom_jitter(aes(colour = source), alpha = 0.3) +
+  #geom_violin(alpha = 0.6) +
+  geom_boxplot()+
   scale_color_manual(values = palette_neutral) +
   labs(title = "Distribution of Signal Intensities - Smoothed data",
        x = "Source",

@@ -13,32 +13,31 @@ smoothing_mean_window_size <- 0
 smooth_borders_option <- "zeros"
 output_suffix <- ""
 
-if (length(args) > 0) {
-    for (i in seq_along(args)) {
-        # Verificar que hay un argumento que comienza con "--"
-        if (grepl("^--", args[i])) {
-            # Comprobar si el siguiente índice existe
-            if (i + 1 <= length(args)) {
-                if (args[i] == "--sources") {
-                    sources <- unlist(strsplit(args[i + 1], ","))
-                } else if (args[i] == "--smoothing_median_window_size") {
-                    smoothing_median_window_size <- as.integer(args[i + 1])
-                } else if (args[i] == "--smoothing_mean_window_size") {
-                    smoothing_mean_window_size <- as.integer(args[i + 1])
-                } else if (args[i] == "--smooth_borders_option") {
-                    smooth_borders_option <- args[i + 1]
-                } else if (args[i] == "--testing") {
-                    testing <- tolower(args[i + 1]) == "true"
-                } else if (args[i] == "--main_folder") {
-                    main_folder <- args[i + 1]
-                } else if (args[i] == "--output_suffix") {
-                    output_suffix <- paste0(args[i + 1], "_")
-                }
-            } else {
-                warning(sprintf("Missing value for argument: %s", args[i]))
-            }
-        }
+
+if (length(args) == 0) {
+  cat("No arguments provided. Using default values.\n")
+} else {
+  # User values
+  for (i in seq(1, length(args), by = 2)) {
+    if (args[i] == "--main_folder") {
+      main_folder <- args[i + 1]
     }
+    if (args[i] == "--testing") {
+      testing <- as.logical(args[i + 1])
+    }
+    if (args[i] == "--sources") {
+      sources <- unlist(strsplit(args[i + 1], ",")) #
+    }
+    if (args[i] == "--smoothing_median_window_size") {
+      smoothing_median_window_size <- as.numeric(args[i + 1])
+    }
+    if (args[i] == "--smooth_borders_option") {
+      smooth_borders_option <- args[i + 1]
+    }
+    if (args[i] == "--output_suffix") {
+      output_suffix <- paste0(args[i + 1], "_")
+    }
+  }
 }
 
 # Print values 
