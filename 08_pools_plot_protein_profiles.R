@@ -72,7 +72,7 @@ if (!dir.exists(output_folder)) {
 functions_folder <- sprintf("%s/functions", main_folder)
 
 #### CALL MAIN FUNCTION ####
-source(sprintf("%s/11_plot_protein_profiles_function.R", functions_folder))
+source(sprintf("%s/08_plot_protein_profiles_function.R", functions_folder))
 
 plot_proteins(project_folder = project_folder,
               input_folder = input_folder,
