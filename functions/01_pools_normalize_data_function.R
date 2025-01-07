@@ -35,6 +35,8 @@ normalize_and_process_data <- function(raw_data_folder, output_folder, sources) 
   output_statistics_mode_decimals <- 2
   output_statistics_sd_decimals <- 2
   
+  output_suffix <- "normalized"
+  
   for (source_for in sources) {
     # source_for <- sources[1]
     for (type_for in types) {
@@ -126,7 +128,7 @@ normalize_and_process_data <- function(raw_data_folder, output_folder, sources) 
       
       normalized_data_for <- full_normalized_data[, cols_to_select, with = F]
       
-      normalized_data_output_file <- sprintf("%s/%s_%s%s", output_folder, source_for, type_for, output_suffix)
+      normalized_data_output_file <- sprintf("%s/%s_%s_%s", output_folder, source_for, type_for, output_suffix)
       write.table(normalized_data_for, file = normalized_data_output_file, col.names = T, row.names = F, sep = "\t", quote = T) 
     }
   }
