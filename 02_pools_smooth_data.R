@@ -69,7 +69,11 @@ output_folder <- sprintf("%s/outputs/02_pools_smoothed_data", project_folder)
 functions_folder <- sprintf("%s/functions", main_folder)
 functions_file <- sprintf("%s/02_pools_smooth_data_function.R", functions_folder)
 
-design_data_file <- sprintf("%s/Supplementary File S08 - Mapping of CHAGASTOPE-v1 data to T cruzi proteins.tsv", design_data_folder)
+if (testing) {
+  design_data_file <- sprintf("%s/Supplementary File S08 - Mapping of CHAGASTOPE-v1 data to T cruzi proteins.tsv", design_data_folder)
+} else {
+  design_data_file <- sprintf("%s/CHAGASTOPE-v1-Trypanosomatics-Aguero-Array-Design-ADF.tsv_orig_2022-03-16_12_35_41.txt", design_data_folder)  
+}
 design_group <- "Trypanosoma_cruzi"
 
 normalized_data_folder <- sprintf("%s/outputs/01_pools_normalized_data/", project_folder)
