@@ -6,9 +6,12 @@ if (!require(data.table, quietly = TRUE)) {
 }
 
 if (!require(preprocessCore, quietly = TRUE)) {
-  writeLines("Installing library 'preprocessCore' for R")
-  install.packages("preprocessCore", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-  library(preprocessCore) #quantile.normalization
+  writeLines("Installing library 'preprocessCore' from Bioconductor")
+  if (!require(BiocManager, quietly = TRUE)) {
+    install.packages("BiocManager")
+  }
+  BiocManager::install("preprocessCore")
+  library(preprocessCore)
 }
 
 #### AUXILIAR FUNCTIONS ####
