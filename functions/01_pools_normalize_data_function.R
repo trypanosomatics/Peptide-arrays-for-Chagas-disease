@@ -35,7 +35,7 @@ normalize_and_process_data <- function(raw_data_folder, output_folder, sources) 
   output_statistics_mode_decimals <- 2
   output_statistics_sd_decimals <- 2
   
-  output_suffix <- "normalized"
+  output_suffix <- "normalized.tsv"
   
   for (source_for in sources) {
     # source_for <- sources[1]
