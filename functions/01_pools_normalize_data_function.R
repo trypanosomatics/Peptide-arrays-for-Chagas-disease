@@ -5,9 +5,12 @@ if (!require(data.table, quietly = TRUE)) {
   library(data.table)
 }
 if (!require(preprocessCore, quietly = TRUE)) {
-  writeLines("Installing library 'preprocessCore' for R")
-  install.packages("preprocessCore", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-  library(preprocessCore) #to modify pheatmap
+  writeLines("Installing library 'preprocessCore' from Bioconductor")
+  if (!require(BiocManager, quietly = TRUE)) {
+    install.packages("BiocManager")
+  }
+  BiocManager::install("preprocessCore")
+  library(preprocessCore)
 }
 
 #### AUXILIARY FUNCTIONS ####
