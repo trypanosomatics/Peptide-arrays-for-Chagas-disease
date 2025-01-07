@@ -31,6 +31,9 @@ if (length(args) == 0) {
     if (args[i] == "--smoothing_median_window_size") {
       smoothing_median_window_size <- as.numeric(args[i + 1])
     }
+    if (args[i] == "--smooth_mean_window_size") {
+      smoothing_mean_window_size <- as.numeric(args[i + 1])
+    }
     if (args[i] == "--smooth_borders_option") {
       smooth_borders_option <- args[i + 1]
     }
