@@ -88,4 +88,4 @@ combined_mean_signal_decimals <- 2
 #### CALL MAIN FUNCTION ####
 source(functions_file)
 
-determine_peaks(main_folder, testing, sources, min_num_of_peptides_in_peak, sd_multiplier_for_cutoff, profile_data_suffix)
+determine_peaks(main_folder, testing, sources, types, project_folder, min_num_of_peptides_in_peak, sd_multiplier_for_cutoff, profile_data_suffix)
