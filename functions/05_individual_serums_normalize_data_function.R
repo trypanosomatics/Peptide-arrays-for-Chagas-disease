@@ -23,7 +23,7 @@ calculateMode <- function(x, decimals = 0) {
 
 
 #### MAIN FUNCTION ####
-normalize_serums <- function(raw_data_folder, output_folder, testing, sources, types, output_suffix, output_signal_decimals, output_statistics_mode_decimals, output_statistics_sd_decimals)) {
+normalize_serums <- function(raw_data_folder, output_folder, testing, sources, types, output_suffix, output_signal_decimals, output_statistics_mode_decimals, output_statistics_sd_decimals) {
   
   #### NORMALIZE ALL DATA ####
   #Get data
