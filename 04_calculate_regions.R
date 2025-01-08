@@ -19,9 +19,6 @@ for (i in seq(1, length(args), by = 2)) {
   if (args[i] == "--peaks_tag") {
     peaks_tag <- args[i + 1]
   }
-  if (args[i] == "--output_suffix") {
-  output_suffix <- args[i + 1]
-  }
 }
 
 output_suffix <- peaks_tag
