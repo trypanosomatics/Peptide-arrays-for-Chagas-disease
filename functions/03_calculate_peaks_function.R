@@ -5,7 +5,7 @@ if (!require(data.table, quietly = TRUE)) {
   library(data.table)
 }
 
-determine_peaks <- function(main_folder, testing, sources, min_num_of_peptides_in_peak, sd_multiplier_for_cutoff = NULL, profile_data_suffix) {
+determine_peaks <- function(main_folder, testing, sources, types, project_folder, min_num_of_peptides_in_peak, sd_multiplier_for_cutoff = NULL, profile_data_suffix) {
   
   if (is.null(sd_multiplier_for_cutoff)) {
     if (testing == TRUE) {
