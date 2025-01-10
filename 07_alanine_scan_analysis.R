@@ -40,11 +40,11 @@ for (i in seq(1, length(args), by = 2)) {
 if (testing == TRUE) {
   #For testing
   project_folder <- sprintf("%s/test_data", main_folder)
-  design_alanine_file <- sprintf("%s/77_extra_files/alanine_scan_design_test_subset.tsv", main_folder)  
+  design_alanine_file <- sprintf("%s/extra_files/alanine_scan_design_test_subset.tsv", main_folder)  
 } else {
   #For running the actual data
   project_folder <- sprintf("%s/chagastope_data", main_folder)
-  design_alanine_file <- sprintf("%s/77_extra_files/alanine_scan_design.tsv", main_folder)
+  design_alanine_file <- sprintf("%s/extra_files/alanine_scan_design.tsv", main_folder)
 }
 
 design_data_file <- sprintf("%s/inputs/11_individual_serums_array_design/Supplementary File S09 - Mapping of CHAGASTOPE-v2 data to T cruzi proteins.tsv", project_folder)
