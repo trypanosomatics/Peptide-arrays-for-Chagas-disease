@@ -124,8 +124,13 @@ alanine_scan <- function(main_folder, testing, selected_protein) {
     Chips_roche_norm <- rbind(Chips_roche_norm,Chips_roche_norm_dat)
   } #Load all micro-array results for all samples
   
+    proteins_to_process <- if (!is.null(selected_protein)) {
+    unique(design_alanine$protein[design_alanine$protein == selected_protein])
+  } else {
+      unique(design_alanine$protein)
+  }
   
-  for (protein_to_estimate in unique(design_alanine$protein)) {
+  for (protein_to_estimate in proteins_to_process) {
     dt <- estimateSignalChanges(protein_to_estimate)
     matrix <- generateHeatmapMatrix(dt)  
     #### SAVE RESULTS ####
