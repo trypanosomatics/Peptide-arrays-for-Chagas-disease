@@ -52,7 +52,7 @@ design_data_file <- sprintf("%s/inputs/11_individual_serums_array_design/Supplem
 
 #### Aux function path ####
 functions_folder <- sprintf("%s/functions", main_folder)
-functions_file <- sprintf("%s/07_alanine_scan_analisis_function.R", functions_folder)
+functions_file <- sprintf("%s/07_alanine_scan_analysis_function.R", functions_folder)
 
 #### CALL MAIN FUNCTION ####
 source(functions_file)
