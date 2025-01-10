@@ -63,7 +63,7 @@ if (testing == TRUE) {
 
 input_folder <- sprintf("%s/outputs/02_pools_smoothed_data", project_folder)
 design_file <- sprintf("%s/inputs/01_pools_array_design/Supplementary File S08 - Mapping of CHAGASTOPE-v1 data to T cruzi proteins.tsv", project_folder)
-output_folder <- sprintf("%s/outputs/11_plots", project_folder)
+output_folder <- sprintf("%s/outputs/08_plots", project_folder)
 
 if (!dir.exists(output_folder)) {
   dir.create(output_folder, recursive = TRUE)
