@@ -35,13 +35,13 @@ for (i in seq(1, length(args), by = 2)) {
     sources <- unlist(strsplit(args[i + 1], ","))
   }
   if (args[i] == "--smoothing_median_window_size") {
-    main_folder <- args[i + 1]
+    smoothing_median_window_size <- as.numeric(args[i + 1])
   }
   if (args[i] == "--smoothing_mean_window_size") {
-    main_folder <- args[i + 1]
+    smoothing_mean_window_size <- as.numeric(args[i + 1])
   }
   if (args[i] == "--smooth_borders_option") {
-    main_folder <- args[i + 1]
+    smooth_borders_option <- args[i + 1]
   }
 }
 
