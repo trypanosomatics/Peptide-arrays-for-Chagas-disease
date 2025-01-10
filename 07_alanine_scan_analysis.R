@@ -18,7 +18,7 @@ args <- commandArgs(trailingOnly = TRUE)
 # Default values
 main_folder <- "."
 testing <- TRUE
-
+selected_protein <- NULL
 
 for (i in seq(1, length(args), by = 2)) {
   if (args[i] == "--main_folder") {
@@ -28,7 +28,7 @@ for (i in seq(1, length(args), by = 2)) {
     testing <- as.logical(args[i + 1])
   }
   if (args[i] == "--selected_protein") {
-    selected_protein <- paste0("\"", args[i + 1], "\"")
+    selected_protein <- unlist(strsplit(args[i + 1], ","))
   }
 }
 
