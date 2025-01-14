@@ -63,7 +63,7 @@ smoothVector <- function(vector, median_window_size = 5, mean_window_size = 7, b
 
 
 #### MAIN FUNCTION ####
-smooth_serums <- function(main_folder, testing, sources, smoothing_median_window_size, smoothing_mean_window_size, smooth_borders_option) {
+smooth_serums <- function(main_folder, testing, sources, smoothing_median_window_size, smoothing_mean_window_size, smooth_borders_option, output_suffix) {
   
   #### SMOOTH DATA ####
   design_data <- fread(design_data_file, header = T, sep = "\t", na.strings = NULL)
@@ -126,7 +126,7 @@ smooth_serums <- function(main_folder, testing, sources, smoothing_median_window
                                      "sequence", "truncated"))
       
       #Write data
-      output_file <- sprintf("%s/%s_%s%s", output_folder, source_for, type_for, output_suffix)
+      output_file <- sprintf("%s/%s_%s_%ssmoothed_signals.tsv", output_folder, source_for, type_for, output_suffix)
       write.table(normalized_data, file = output_file, col.names = T, row.names = F, sep = "\t", quote = T) 
     }
   }
