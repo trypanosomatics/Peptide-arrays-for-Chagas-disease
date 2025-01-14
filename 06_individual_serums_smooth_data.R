@@ -23,6 +23,7 @@ smoothing_mean_window_size <- 0
 # smooth_borders_option is used to have the same amount of data after the smoothing.
 # "zeros" fill the sides with 0, "repeat" fill the side with signals equal to the last one
 smooth_borders_option <- "zeros" 
+output_suffix <- ""
 
 for (i in seq(1, length(args), by = 2)) {
   if (args[i] == "--main_folder") {
@@ -42,6 +43,9 @@ for (i in seq(1, length(args), by = 2)) {
   }
   if (args[i] == "--smooth_borders_option") {
     smooth_borders_option <- args[i + 1]
+  }
+    if (args[i] == "--output_suffix") {
+    output_suffix <- paste0(args[i + 1], "_")
   }
 }
 
@@ -67,7 +71,6 @@ design_data_file <- sprintf("%s/inputs/11_individual_serums_array_design/Supplem
 normalized_data_folder <- sprintf("%s/outputs/11_individual_serums_normalized_data", project_folder)
 
 output_folder <- sprintf("%s/outputs/12_individual_serums_smoothed_data", project_folder)
-output_suffix <- "_smoothed_signals.tsv"
 
 if (!dir.exists(output_folder)) {
   dir.create(output_folder, recursive = TRUE)
@@ -81,4 +84,4 @@ functions_file <- sprintf("%s/06_individual_serums_smooth_data_function.R", func
 #### CALL MAIN FUNCTION ####
 source(functions_file)
 
-smooth_serums(main_folder, testing, sources, smoothing_median_window_size, smoothing_mean_window_size, smooth_borders_option)
+smooth_serums(main_folder, testing, sources, smoothing_median_window_size, smoothing_mean_window_size, smooth_borders_option, output_suffix)
