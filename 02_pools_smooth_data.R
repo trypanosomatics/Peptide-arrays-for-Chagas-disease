@@ -73,7 +73,7 @@ design_data_file <- sprintf("%s/Supplementary File S08 - Mapping of CHAGASTOPE-v
 design_group <- "Trypanosoma_cruzi"
 
 normalized_data_folder <- sprintf("%s/outputs/01_pools_normalized_data/", project_folder)
-normalized_data_suffix <- "_normalized.tsv"
+normalized_data_suffix <- "_processed.tsv"
 
 #### CALL MAIN FUNCTION ####
 source(functions_file)
