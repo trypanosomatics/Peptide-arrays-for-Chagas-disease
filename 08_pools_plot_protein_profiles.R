@@ -30,7 +30,7 @@ if (length(args) == 0) {
       sources <- unlist(strsplit(args[i + 1], ",")) # Divide sources si se pasan como cadena separada por comas
     }
     if (args[i] == "--profile_data_suffix") {
-      profile_data_suffix <- paste0(args[i + 1], "_smoothed.tsv")
+      profile_data_suffix <- args[i + 1]
       output_suffix <- args[i + 1]
     }
     if (args[i] == "--protein") {
