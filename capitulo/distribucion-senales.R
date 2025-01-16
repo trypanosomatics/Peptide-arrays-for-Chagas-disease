@@ -6,7 +6,7 @@ library(readr)
 library(tidyr)
 library(patchwork)
 library(scico)
-
+library(data.table)
 
 #### Raw data ####
 
@@ -258,6 +258,76 @@ DensityScatterplot <- function(plot_data, x_column_name, y_column_name, gradient
 }
 
 
+
+
+# Jitter coloreado por densidad -------------------------------------------
+# Calcular densidad en celdas
+library(scales)
+
+# Crear una transformación personalizada
+custom_trans <- trans_new(
+  name = "custom",
+  transform = function(x) ifelse(x <= 10000, x * 2, 15000 + (x - 10000) / 3),
+  inverse = function(y) ifelse(y <= 10000, y / 2, 10000 + (y - 15000) * 3)
+)
+
+# Función
+DensityJitterplot <- function(plot_data, x_column_name, y_column_name, gradient_palette = "hawaii",
+                              bin_amount_per_axis = 1000, max_data_density_to_consider_per_cell = 100000, gradient_steps = 200,
+                              geom_point_size = 1, geom_point_shape = 16, plot_title = "", x_label = "X", y_label = "Y",
+                              axis_title_size = 16, axis_text_size = 16, axis_ticks_length = 0.2, panel_background_size = 1,
+                              fixed_scale = 0, fixed_scale_min = 0, fixed_scale_max = 0, y_lim_min = NULL, y_lim_max = NULL, legend_position = "right") {
+  
+  plot_data_aux <- as.data.table(plot_data)
+  setnames(plot_data_aux, x_column_name, "x_column")
+  setnames(plot_data_aux, y_column_name, "y_column")
+  
+  # Ajustar rango de densidad
+  min_y_value <- floor(min(plot_data_aux$y_column))
+  max_y_value <- ceiling(max(plot_data_aux$y_column))
+  grid_size_y <- (max_y_value - min_y_value + 1) / bin_amount_per_axis
+  plot_data_aux[, y_cell := ((y_column - min_y_value) %/% grid_size_y) + 1]
+  
+  # Calcular densidad de puntos por celda
+  point_density <- plot_data_aux[, .N, by = .(y_cell)]
+  plot_data_aux <- merge(plot_data_aux, point_density[, .(y_cell, N)], by = "y_cell")
+  
+  # Genera el gráfico con los puntos en el eje X y la densidad en Y
+  p <- ggplot(plot_data_aux[order(plot_data_aux$y_column),]) +
+    geom_jitter(aes(x = x_column, y = y_column, colour = log10(N + 1)), 
+                width = 0.2, size = geom_point_size, shape = geom_point_shape) +
+    scale_color_scico(palette = gradient_palette, guide = "colorbar") +
+    scale_y_continuous(trans = custom_trans,
+                       breaks = c(0, 2500, 5000, 7500, 10000, 30000, 40000, 50000, 60000, 70000),
+                       labels = c("0", "2500", "5000", "7500", "10000", "30000", "40000", "50000",  "60000", "70000")) +
+    theme_bw() +
+    theme(axis.title = element_text(size = axis_title_size, colour = "black"),
+          axis.text = element_text(size = axis_text_size, colour = "black"),
+          axis.ticks = element_line(colour = "black"),
+          axis.ticks.length = unit(axis_ticks_length, "cm"),
+          panel.background = element_rect(size = panel_background_size, colour = "black"),
+          aspect.ratio = 2/1, legend.position = legend_position)
+  
+  # Personalización del gráfico
+  if (plot_title != "") {
+    p <- p + ggtitle(label = plot_title) + theme(plot.title = element_text(hjust = 0.5))
+  }
+  if (x_label != "") {
+    p <- p + xlab(x_label)
+  }
+  if (y_label != "") {
+    p <- p + ylab(y_label)
+  }
+  
+  # Agregar límite en Y si se especifica
+  if (!is.null(y_lim_min) & !is.null(y_lim_max)) {
+    p <- p + coord_cartesian(ylim = c(y_lim_min, y_lim_max))
+  }
+  
+  # Mostrar gráfico
+  p
+}
+
 #### Datasets ####
 NE_raw <- all_data_raw[all_data_raw$type=="NE",]
 PO_raw <- all_data_raw[(all_data_raw$type=="PO" & all_data_raw$source!="LE"),]
@@ -266,16 +336,23 @@ PO_norm <- all_data_normalized[(all_data_normalized$type=="PO" & all_data_normal
 NE_smooth <- all_data_smoothed[all_data_smoothed$type=="NE",]
 PO_smooth <- all_data_smoothed[(all_data_smoothed$type=="PO" & all_data_smoothed$source!="LE"),]
 
-####Plots
+#### Plots ####
 max(all_data_raw[all_data_raw$type=="PO", "Signal"]) #y_max PO = 66000
 max(all_data_raw[all_data_raw$type=="NE", "Signal"]) #y_max NE = 37000
 
+##### Celdas #####
 NE_raw_plot <- DensityScatterplot(NE_raw, "source", "Signal", gradient_palette = "lipari", geom_point_size = 3, 
                    geom_point_shape = 15, plot_title = "Raw", x_label = "Source", y_label = "Signal",
                    y_lim_min = 0, y_lim_max = 37000)
+
+NE_raw_plot <- DensityJitterplot(NE_raw, "source", "Signal", gradient_palette = "lipari", geom_point_size = 3, 
+                                  geom_point_shape = 20, plot_title = "Raw", x_label = "Source", y_label = "Signal",
+                                  y_lim_min = 0, y_lim_max = 37000, legend_position = "none")
+
 NE_norm_plot <- DensityScatterplot(NE_norm, "source", "Signal", gradient_palette = "lipari", geom_point_size = 3, 
                                   geom_point_shape = 15, plot_title = "Normalized", x_label = "Source", y_label = "Signal",
                                   y_lim_min = 0, y_lim_max = 37000)
+
 NE_smooth_plot <- DensityScatterplot(NE_smooth, "source", "mean_smoothed_signal", gradient_palette = "lipari", geom_point_size = 3, 
                                   geom_point_shape = 15, plot_title = "Smoothed", x_label = "Source", y_label = "Signal",
                                   y_lim_min = 0, y_lim_max = 37000)
@@ -293,3 +370,40 @@ PO_smooth_plot <- DensityScatterplot(PO_smooth, "source", "mean_smoothed_signal"
                                      y_lim_min = 0, y_lim_max = 66000)
 
 PO_raw_plot + PO_norm_plot + PO_smooth_plot + plot_layout(ncol = 3)
+
+
+##### Puntos #####
+
+#Eliminar ejes
+woaxis <- theme(
+  axis.title.y = element_blank(),  # Remove y-axis title
+  axis.text.y = element_blank(),   # Remove y-axis text
+  axis.ticks.y = element_blank(),  # Remove y-axis ticks
+)
+
+NE_raw_plot <- DensityJitterplot(NE_raw, "source", "Signal", gradient_palette = "lipari", geom_point_size = 2, 
+                                 geom_point_shape = 16, plot_title = "Raw", x_label = "Source", y_label = "Signal",
+                                 y_lim_min = 0, y_lim_max = 37000, legend_position = "none")
+
+NE_norm_plot <- DensityJitterplot(NE_norm, "source", "Signal", gradient_palette = "lipari", geom_point_size = 2, 
+                                   geom_point_shape = 16, plot_title = "Normalized", x_label = "Source", y_label = "Signal",
+                                   y_lim_min = 0, y_lim_max = 37000, legend_position = "none")
+
+NE_smooth_plot <- DensityJitterplot(NE_smooth, "source", "mean_smoothed_signal", gradient_palette = "lipari", geom_point_size = 2, 
+                                     geom_point_shape = 16, plot_title = "Smoothed", x_label = "Source", y_label = "Signal",
+                                     y_lim_min = 0, y_lim_max = 37000)
+
+
+NE_raw_plot + (NE_norm_plot + woaxis) + (NE_smooth_plot + woaxis) + plot_annotation(title = "Negatives")
+
+PO_raw_plot <- DensityJitterplot(PO_raw, "source", "Signal", gradient_palette = "lipari", geom_point_size = 2, 
+                                  geom_point_shape = 16, plot_title = "Raw", x_label = "Source", y_label = "Signal",
+                                  y_lim_min = 0, y_lim_max = 66000, legend_position = "none")
+PO_norm_plot <- DensityJitterplot(PO_norm, "source", "Signal", gradient_palette = "lipari", geom_point_size = 2, 
+                                   geom_point_shape = 16, plot_title = "Normalized", x_label = "Source", y_label = "Signal",
+                                   y_lim_min = 0, y_lim_max = 66000, legend_position = "none")
+PO_smooth_plot <- DensityJitterplot(PO_smooth, "source", "mean_smoothed_signal", gradient_palette = "lipari", geom_point_size = 2, 
+                                     geom_point_shape = 16, plot_title = "Smoothed", x_label = "Source", y_label = "Signal",
+                                     y_lim_min = 0, y_lim_max = 66000)
+
+PO_raw_plot + (PO_norm_plot + woaxis) + (PO_smooth_plot + woaxis) + plot_annotation(title = "Positives")
