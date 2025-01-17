@@ -1,4 +1,4 @@
-setwd("~/Documentos/Guada/Array/Peptide-arrays-for-Chagas-disease/test_data/")
+setwd("~/Documentos/Guada/Array/Peptide-arrays-for-Chagas-disease/")
 library(dplyr)
 library(ggplot2)
 library(purrr)
@@ -7,10 +7,12 @@ library(tidyr)
 library(patchwork)
 library(scico)
 library(data.table)
+library(ggbreak)
 
 #### Raw data ####
 
-path_to_files <- "C://Users/romer/Documentos/Peptide-arrays-for-Chagas-disease/Peptide-arrays-for-Chagas-disease/test_data/inputs/02_pools_raw_data/"
+#path_to_files <- "C://Users/romer/Documentos/Peptide-arrays-for-Chagas-disease/Peptide-arrays-for-Chagas-disease/test_data/inputs/02_pools_raw_data/"
+path_to_files <- "test_data/inputs/02_pools_raw_data/"
 files <- list.files(path = path_to_files, pattern = "raw\\.tsv$", full.names = TRUE)
 all_data_raw <- data.frame()
 
@@ -32,7 +34,7 @@ rm(data, data_long)
 
 #### Normalized data ####
 
-#path_to_files <- "~/Documentos/Guada/Array/Peptide-arrays-for-Chagas-disease/test_data/outputs/01_pools_normalized_data/"
+path_to_files <- "~/Documentos/Guada/Array/Peptide-arrays-for-Chagas-disease/test_data/outputs/01_pools_normalized_data/"
 path_to_files <- "C://Users/romer/Documentos/Peptide-arrays-for-Chagas-disease/Peptide-arrays-for-Chagas-disease/test_data/outputs/01_pools_normalized_data/"
 files <- list.files(path = path_to_files, pattern = "processed\\.tsv$", full.names = TRUE)
 all_data_normalized <- data.frame()
@@ -56,9 +58,9 @@ rm(data, data_long)
 
 #### Smoothed data ####
 
-#path_to_files <- "~/Documentos/Guada/Array/Peptide-arrays-for-Chagas-disease/test_data/outputs/02_pools_smoothed_data//"
+path_to_files <- "~/Documentos/Guada/Array/Peptide-arrays-for-Chagas-disease/test_data/outputs/02_pools_smoothed_data//"
 path_to_files <- "C://Users/romer/Documentos/Peptide-arrays-for-Chagas-disease/Peptide-arrays-for-Chagas-disease/test_data/outputs/02_pools_smoothed_data//"
-files <- list.files(path = path_to_files, pattern = "smoothed\\.tsv$", full.names = TRUE)
+files <- list.files(path = path_to_files, pattern = "[PO|NE]_smoothed\\.tsv$", full.names = TRUE)
 all_data_smoothed <- data.frame()
 
 for (file in files) {
@@ -297,9 +299,10 @@ DensityJitterplot <- function(plot_data, x_column_name, y_column_name, gradient_
     geom_jitter(aes(x = x_column, y = y_column, colour = log10(N + 1)), 
                 width = 0.2, size = geom_point_size, shape = geom_point_shape) +
     scale_color_scico(palette = gradient_palette, guide = "colorbar") +
-    scale_y_continuous(trans = custom_trans,
-                       breaks = c(0, 2500, 5000, 7500, 10000, 30000, 40000, 50000, 60000, 70000),
-                       labels = c("0", "2500", "5000", "7500", "10000", "30000", "40000", "50000",  "60000", "70000")) +
+    #scale_y_continuous(trans = custom_trans,
+    #                   breaks = c(0, 2500, 5000, 7500, 10000, 30000, 40000, 50000, 60000, 70000),
+    #                   labels = c("0", "2500", "5000", "7500", "10000", "30000", "40000", "50000",  "60000", "70000")) +
+    scale_y_continuous() +
     theme_bw() +
     theme(axis.title = element_text(size = axis_title_size, colour = "black"),
           axis.text = element_text(size = axis_text_size, colour = "black"),
@@ -329,11 +332,11 @@ DensityJitterplot <- function(plot_data, x_column_name, y_column_name, gradient_
 }
 
 #### Datasets ####
-NE_raw <- all_data_raw[all_data_raw$type=="NE",]
+NE_raw <- all_data_raw[(all_data_raw$type=="NE" & all_data_raw$source!="LE"),]
 PO_raw <- all_data_raw[(all_data_raw$type=="PO" & all_data_raw$source!="LE"),]
-NE_norm <- all_data_normalized[all_data_normalized$type=="NE",]
+NE_norm <- all_data_normalized[(all_data_normalized$type=="NE" & all_data_normalized$source!="LE"),]
 PO_norm <- all_data_normalized[(all_data_normalized$type=="PO" & all_data_normalized$source!="LE"),]
-NE_smooth <- all_data_smoothed[all_data_smoothed$type=="NE",]
+NE_smooth <- all_data_smoothed[(all_data_smoothed$type=="NE" & all_data_smoothed$source!="LE"),]
 PO_smooth <- all_data_smoothed[(all_data_smoothed$type=="PO" & all_data_smoothed$source!="LE"),]
 
 #### Plots ####
@@ -384,6 +387,8 @@ woaxis <- theme(
 NE_raw_plot <- DensityJitterplot(NE_raw, "source", "Signal", gradient_palette = "lipari", geom_point_size = 2, 
                                  geom_point_shape = 16, plot_title = "Raw", x_label = "Source", y_label = "Signal",
                                  y_lim_min = 0, y_lim_max = 37000, legend_position = "none")
+
+NE_raw_plot  + scale_y_break(c(10000, 11000), ticklabels = c(0,2500,5000,7500,10000,20000,30000,40000), scale = "free")
 
 NE_norm_plot <- DensityJitterplot(NE_norm, "source", "Signal", gradient_palette = "lipari", geom_point_size = 2, 
                                    geom_point_shape = 16, plot_title = "Normalized", x_label = "Source", y_label = "Signal",
