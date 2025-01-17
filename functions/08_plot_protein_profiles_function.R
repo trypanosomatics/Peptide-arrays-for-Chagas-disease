@@ -557,8 +557,8 @@ plot_proteins = function(project_folder,
   #### CONFIGURE THE PLOT ####
   ############################-
   
-  neg_line_color = "#cc79a7"
-  pos_line_color = "#0072b2"
+  neg_line_color = "#f8766d"
+  pos_line_color = "#00bfc4"
   cutoff_color = "black"
   
   #Add the errors
