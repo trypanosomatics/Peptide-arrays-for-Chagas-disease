@@ -154,8 +154,9 @@ plot_proteins_ridge = function(project_folder, input_folder, design_file, source
     p <- ggplot(sub_plot_data, aes(x = start, y = source, height = mean_smoothed_signal, fill = country)) + 
       geom_density_ridges(stat = "identity", scale = 2, alpha = 0.8) + 
       scale_fill_manual(values = color_palette) + 
+      scale_y_discrete(limits = rev(unique(sort(sub_plot_data$source)))) +
       theme_minimal() + 
-      labs(title = sprintf("Ridge Plot for %s", protein_for), x = "Start Position", y = "Source", fill = "Country") 
+      labs(title = sprintf("Signal plot for %s protein", protein), x = "Peptide position", y = "Source", fill = "Country") 
     
     print(p) } 
   

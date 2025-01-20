@@ -5,6 +5,7 @@ args <- commandArgs(trailingOnly = TRUE)
 
 # Default values
 main_folder <- "."
+#main_folder <- "C://Users/romer/Documentos/Peptide-arrays-for-Chagas-disease/Peptide-arrays-for-Chagas-disease"
 testing <- TRUE
 sources <- c("AR_P1", "AR_P2", "AR_P3", "AR_P4", "AR_P5", "AR_P6", "BO_P1", "BO_P2", "BO_P3", "BO_P4", "BO_P5", "BO_P6", "BR_P1", "BR_P2", "BR_P3", "BR_P4", "BR_P5", "CO_P1", "CO_P2",
              "CO_P3", "CO_P4", "MX_P1", "MX_P2", "MX_P3", "MX_P4", "MX_P5", "MX_P6", "US_P1", "US_P2", "US_P3", "US_P4", "US_P5", "US_P6", "AR_E1", "AR_E2", "AR_E3", "AR_E4", "AR_E5",
@@ -77,7 +78,7 @@ functions_folder <- sprintf("%s/functions", main_folder)
 #### CALL MAIN FUNCTION ####
 source(sprintf("%s/09_individual_serums_plot_protein_profiles_function.R", functions_folder))
 
-plot_proteins(project_folder = project_folder,
+plot_proteins_ridge(project_folder = project_folder,
               input_folder = input_folder,
               design_file = design_file,
               sources = sources,
