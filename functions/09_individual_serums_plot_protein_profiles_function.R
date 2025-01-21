@@ -31,6 +31,16 @@ if (!require(scico, quietly = TRUE)) {
   install.packages("scico", repos = "http://cran.rstudio.com/", dependencies = TRUE)
   library(scico)
 }
+if (!require(dplyr, quietly = TRUE)) {
+  writeLines("Installing library 'dplyr' for R")
+  install.packages("dplyr", repos = "http://cran.rstudio.com/", dependencies = TRUE)
+  library(dplyr)
+}
+if (!require(ggh4x, quietly = TRUE)) {
+  writeLines("Installing library 'ggh4x' for R")
+  install.packages("ggh4x", repos = "http://cran.rstudio.com/", dependencies = TRUE)
+  library(ggh4x)
+}
 #############################-
 #### Auxiliary Functions ####
 #############################-
@@ -113,7 +123,7 @@ prepare_plot_data <- function(
 #######################
 plot_proteins_ridge = function(project_folder, input_folder, design_file, sources, 
                                profile_data_suffix, output_folder, protein, 
-                               sd_multiplier_for_cutoff, output_suffix, only_proteins_above, only_proteins_below) { 
+                               sd_multiplier_for_cutoff, output_suffix, only_proteins_above, only_proteins_below, pdf_width, pdf_height) { 
   
   
   plot_data_result <- prepare_plot_data( project_folder = project_folder, input_folder = input_folder, 
@@ -122,9 +132,10 @@ plot_proteins_ridge = function(project_folder, input_folder, design_file, source
                                          sd_multiplier_for_cutoff = sd_multiplier_for_cutoff, 
                                          only_proteins_above = only_proteins_above, 
                                          only_proteins_below = only_proteins_below, 
-                                         output_suffix = output_suffix ) 
+                                         output_suffix = output_suffix) 
   
   all_plot_data <- plot_data_result$all_plot_data
+  all_plot_data$source <- factor(all_plot_data$source)
   all_plot_data$country <- as.factor(sub("_.*", "", all_plot_data$source))
 
   plot_order <- plot_data_result$plot_order
@@ -132,8 +143,10 @@ plot_proteins_ridge = function(project_folder, input_folder, design_file, source
   proteins_to_plot <- plot_data_result$proteins_to_plot
   
   color_palette <- scico(6, palette = 'batlow')
-
+  countries <- c("AR", "BO", "BR", "CO", "MX", "US")
+  country_colors <- setNames(color_palette, countries)
   
+  all_plot_data$country_color <- country_colors[all_plot_data$country]
   
   #Crear archivo PDF 
   output_file_prefix <- if (is.null(protein)) { 
@@ -146,17 +159,30 @@ plot_proteins_ridge = function(project_folder, input_folder, design_file, source
     } else { sprintf("%s/%s_%s.pdf", output_folder, output_file_prefix, output_suffix) 
       } 
   
-  pdf(file = output_file_name, width = 8.27, height =11.69) 
+  pdf(file = output_file_name, width = pdf_width, height = pdf_height) 
   
   for (protein_for in proteins_to_plot) { 
+    #protein_for <- proteins_to_plot[1]
     cat(sprintf("Plotting %s...\n", protein_for)) 
-    sub_plot_data <- all_plot_data[protein == protein_for] 
-    p <- ggplot(sub_plot_data, aes(x = start, y = source, height = mean_smoothed_signal, fill = country)) + 
-      geom_density_ridges(stat = "identity", scale = 2, alpha = 0.8) + 
-      scale_fill_manual(values = color_palette) + 
-      scale_y_discrete(limits = rev(unique(sort(sub_plot_data$source)))) +
+    sub_plot_data <- all_plot_data[protein == protein_for]
+    
+    unique_country_colors <- country_colors[names(country_colors) %in% unique(sub_plot_data$country)]
+    strip <- strip_themed(background_y = elem_list_rect(fill = unique_country_colors))
+    
+    p <- ggplot(sub_plot_data, aes(x = start, y = source, height = mean_smoothed_signal, fill = mean_smoothed_signal)) + 
+      geom_density_ridges_gradient(stat = "identity", scale = 3) + 
+      scale_fill_scico(palette = "lipari", aesthetics = "fill") + #AGREGAR , alpha = 0.4
       theme_minimal() + 
-      labs(title = sprintf("Signal plot for %s protein", protein), x = "Peptide position", y = "Source", fill = "Country") 
+      labs(title = sprintf("Signal plot for %s protein", protein_for), x = "Peptide position", 
+           y = "Source", fill = "Signal") +
+      scale_y_discrete(position = "right") + 
+      facet_wrap2(~ country, ncol = 1, scales = "free_y", strip = strip, strip.position = "left")+
+      theme(
+        strip.text = element_text(color = "white"),  # Color del texto de la etiqueta
+        panel.border = element_rect(fill = "transparent", color = "black", linewidth = 0.5),
+        axis.ticks.y = element_line(color = "black"),
+        axis.text.y = element_text(vjust = 0)
+      )
     
     print(p) } 
   

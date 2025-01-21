@@ -17,6 +17,8 @@ sd_multiplier_for_cutoff <- 4
 only_proteins_above <- 0
 only_proteins_below <- 0
 output_suffix <- NULL
+pdf_height <- 11.69
+pdf_width <- 8.27
 
 # User values
 if (length(args) == 0) {
@@ -31,7 +33,7 @@ if (length(args) == 0) {
       testing <- as.logical(args[i + 1])
     }
     if (args[i] == "--sources") {
-      sources <- unlist(strsplit(args[i + 1], ",")) # Divide sources si se pasan como cadena separada por comas
+      sources <- unlist(strsplit(args[i + 1], ","))
     }
     if (args[i] == "--profile_data_suffix") {
       profile_data_suffix <- args[i + 1]
@@ -42,6 +44,12 @@ if (length(args) == 0) {
     }
     if (args[i] == "--sd_multiplier_for_cutoff") {
       sd_multiplier_for_cutoff <- as.numeric(args[i + 1])
+    }
+    if (args[i] == "--pdf_height") {
+      pdf_height <- as.numeric(args[i + 1])
+    }
+    if (args[i] == "--pdf_width") {
+      pdf_width <- as.numeric(args[i + 1])
     }
   }
 }
@@ -88,4 +96,6 @@ plot_proteins_ridge(project_folder = project_folder,
               only_proteins_above = only_proteins_above,
               only_proteins_below = only_proteins_below,
               sd_multiplier_for_cutoff = sd_multiplier_for_cutoff,
-              output_suffix = output_suffix)
+              output_suffix = output_suffix,
+              pdf_height = pdf_height,
+              pdf_width = pdf_width)
