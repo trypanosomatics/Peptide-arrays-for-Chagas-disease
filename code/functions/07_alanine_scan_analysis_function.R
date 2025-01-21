@@ -16,6 +16,11 @@ if (!require(reshape2, quietly = TRUE)) {
   install.packages("reshape2", repos = "http://cran.rstudio.com/", dependencies = TRUE)
   library(reshape2)
 }
+if (!require(pheatmap, quietly = TRUE)) {
+  writeLines("Installing library 'pheatmap' for R")
+  install.packages("pheatmap", repos = "http://cran.rstudio.com/", dependencies = TRUE)
+  library(pheatmap)
+}
 
 #### MAIN FUNCTION ####
 alanine_scan <- function(main_folder, testing, selected_protein) {
@@ -137,9 +142,9 @@ alanine_scan <- function(main_folder, testing, selected_protein) {
     write.table(dt,paste0(project_folder, "/outputs/21_alanine_scan_raw_data/Raw_data_signal_change_alanine_scan_", protein_to_estimate,".tsv"),sep = "\t")  #long format
     write.table(matrix,paste0(project_folder, "/outputs/21_alanine_scan_raw_data/Raw_data_signal_change_matrix_alanine_scan_", protein_to_estimate,".tsv"),sep = "\t") #matrix for heatmap
     
-    # OPTIONAL: using "pheatmap" package you could visualize results as in the manuscript.
-    # pdf(file = paste0(project_folder, "/outputs/21_alanine_scan_raw_data/Heatmap_alanine_scan_", protein_to_estimate,".pdf"),height = 12, width = 12)
-    # print(make_heatmap(temp_matrix = matrix,selected_protein = protein_to_estimate))
-    # dev.off()
+    # using "pheatmap" package you could visualize results as in the manuscript.
+    pdf(file = paste0(project_folder, "/outputs/21_alanine_scan_raw_data/Heatmap_alanine_scan_", protein_to_estimate,".pdf"),height = 12, width = 12)
+    print(make_heatmap(temp_matrix = matrix,selected_protein = protein_to_estimate))
+    dev.off()
   }
 }
