@@ -1,17 +1,13 @@
-# Peptide-arrays-for-Chagas-disease
+# Code for Analysis of Peptide Array Data
+In this chapter, the code for analyzing peptide microarray data from the CHAGASTOPE project (aka the Chagas Antigen and Epitope Atlas) is provided. The same analysis can be applied to other peptide microarrays, with adjustments to the script codes if there is a different array design.
+The code to analyze peptide array data for this chapter is available from the following GitHub repository: https://github.com/trypanosomatics/Peptide-arrays-for-Chagas-disease.
+The repository contains a series of scripts for performing the various steps involved in the analysis and visualization of CHAGASTOPE data. The scripts are sequentially organized in code folder, with the order indicated by the number in the script name (e.g., 01_pools_normalize_data). The sequential steps include normalization of array data across samples, smoothing to remove outliers, calculation/detection of reactive (antigenic) peaks and regions, and analysis of single-residue mutagenesis scanning (Alanine Scans) of epitopes as described in (Ricci et al. 2023).
+The code is divided into two sections: all main scripts contain the primary code, which reads and processes the parameters called and then run the main function. They are essentially wrappers for the main function. This main function, along with other auxiliary functions are  located in the functions sub-folder. Each script is numbered consistently in both sections. This separation is intended for clarity: the main script is concise, allowing users to quickly view the parameters in use and is designed for those who do not wish to modify the code. In contrast, the scripts containing all auxiliary functions are intended for users who wish to delve into the details of the process and make modifications. Parameters are located in the config or parameters sections of the respective scripts.
+Both the main scripts and those in the functions folder must be downloaded for the code to function correctly.
+The code can be executed either through the terminal (Bash or Windows PowerShell), which allows for modifying arguments passed to the script, or by running the script in a number of development environments that support the R programming language (RStudio is recommended).
 
+## Example Bash (Linux)
+./01_pools_normalize_data.R --main_folder /path/to/folder --testing FALSE --sources AR,BO,BR
 
-## Linux (Bash ejecutable)
-./script.R
-o sudo ./script.R (si hay problema de permisos para la instalación de librerías)
-Ej: ./03_calculate_peaks.R --main_folder /ruta/a/folder --testing FALSE --sources AR,BO,BR --min_amount_of_peptides_in_peak 3
-
-
-## Linux (Bash)
-Rscript 01_pools_normalize_data.R
-Rscript 01_pools_normalize_data.R "C:/Users/Ramiro/Documents/GitHub/Peptide-arrays-for-Chagas-disease" TRUE "AR,BO,BR" 
-
-
-## Para Windows (PowerShell)
-& "C:\Program Files\R\R-4.2.1\bin\Rscript.exe" "01_pools_normalize_data.R"
-& "C:\Program Files\R\R-4.2.1\bin\Rscript.exe" "01_pools_normalize_data_terminal.R" "C:/Users/Ramiro/Documents/GitHub/Peptide-arrays-for-Chagas-disease" TRUE "AR,BO,BR" 
+## Example Windows PowerShell
+Rscript '01_pools_normalize_data.R' --main_folder "/path/to/folder" --testing FALSE --sources "AR,BO,BR"
