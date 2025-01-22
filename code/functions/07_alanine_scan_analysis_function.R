@@ -105,7 +105,7 @@ alanine_scan <- function(main_folder, testing, selected_protein) {
   # setwd(project_folder)
   design_alanine <- read.csv(design_alanine_file, sep = "\t")
   
-  input_data_path <- sprintf("%s/inputs/12_individual_serums_raw_data/", project_folder)
+  input_data_path <- sprintf("%s/inputs/04_individual_serums_raw_data/", project_folder)
   files <- list.files(input_data_path)
   files <- files[grepl("raw.tsv",files)]
   
