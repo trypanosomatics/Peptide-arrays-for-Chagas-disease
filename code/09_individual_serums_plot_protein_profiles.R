@@ -73,9 +73,9 @@ if (testing == TRUE) {
   extra_files_folder <- sprintf("%s/data/extra_files", main_folder)
 }
 
-input_folder <- sprintf("%s/outputs/12_individual_serums_smoothed_data", project_folder)
-design_file <- sprintf("%s/inputs/01_pools_array_design/Supplementary File S09 - Mapping of CHAGASTOPE-v2 data to T cruzi proteins.tsv", project_folder)
-output_folder <- sprintf("%s/outputs/11_plots", project_folder)
+input_folder <- sprintf("%s/outputs/06_individual_serums_smoothed_data", project_folder)
+design_file <- sprintf("%s/inputs/03_individual_serums_array_design/Supplementary File S09 - Mapping of CHAGASTOPE-v2 data to T cruzi proteins.tsv", project_folder)
+output_folder <- sprintf("%s/outputs/08_plots", project_folder)
 
 if (!dir.exists(output_folder)) {
   dir.create(output_folder, recursive = TRUE)

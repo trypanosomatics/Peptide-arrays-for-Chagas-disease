@@ -54,11 +54,11 @@ if (testing == TRUE) {
   project_folder <- sprintf("%s/data/chagastope_data", main_folder)
 }
 
-design_data_file <- sprintf("%s/inputs/11_individual_serums_array_design/Supplementary File S09 - Mapping of CHAGASTOPE-v2 data to T cruzi proteins.tsv", project_folder)
+design_data_file <- sprintf("%s/inputs/03_individual_serums_array_design/Supplementary File S09 - Mapping of CHAGASTOPE-v2 data to T cruzi proteins.tsv", project_folder)
 
-raw_data_folder <- sprintf("%s/inputs/12_individual_serums_raw_data", project_folder)
+raw_data_folder <- sprintf("%s/inputs/04_individual_serums_raw_data", project_folder)
 
-output_folder <- sprintf("%s/outputs/11_individual_serums_normalized_data", project_folder)
+output_folder <- sprintf("%s/outputs/05_individual_serums_normalized_data", project_folder)
 output_suffix <- "_processed.tsv"
 
 if (!dir.exists(output_folder)) {

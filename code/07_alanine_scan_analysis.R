@@ -47,7 +47,7 @@ if (testing == TRUE) {
   design_alanine_file <- sprintf("%s/data/extra_files/alanine_scan_design.tsv", main_folder)
 }
 
-design_data_file <- sprintf("%s/inputs/11_individual_serums_array_design/Supplementary File S09 - Mapping of CHAGASTOPE-v2 data to T cruzi proteins.tsv", project_folder)
+design_data_file <- sprintf("%s/inputs/03_individual_serums_array_design/Supplementary File S09 - Mapping of CHAGASTOPE-v2 data to T cruzi proteins.tsv", project_folder)
 
 
 #### Aux function path ####
