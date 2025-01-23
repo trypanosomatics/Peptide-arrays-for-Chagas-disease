@@ -17,7 +17,7 @@ args <- commandArgs(trailingOnly = TRUE)
 
 # Default values
 main_folder <- "."
-testing <- TRUE
+testing <- FALSE
 selected_protein <- NULL
 
 for (i in seq(1, length(args), by = 2)) {

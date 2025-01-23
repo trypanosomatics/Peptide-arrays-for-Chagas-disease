@@ -5,7 +5,7 @@ args <- commandArgs(trailingOnly = TRUE)
 
 # Default values
 main_folder <- "."
-testing <- TRUE
+testing <- FALSE
 sources <- c("AR", "BO", "BR", "CO", "MX", "US", "LE")
 profile_data_suffix <- "smoothed.tsv"
 protein <- NULL  
