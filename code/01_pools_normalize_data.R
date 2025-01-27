@@ -16,7 +16,7 @@ args <- commandArgs(trailingOnly = TRUE)
 
 # Default values
 main_folder <- "."
-testing <- TRUE
+testing <- FALSE
 sources <- c("AR", "BO", "BR", "CO", "MX", "US", "LE")
 
 for (i in seq(1, length(args), by = 2)) {

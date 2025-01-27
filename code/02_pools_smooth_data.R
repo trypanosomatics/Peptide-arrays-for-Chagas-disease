@@ -6,7 +6,7 @@ args <- commandArgs(trailingOnly = TRUE)
 
 # Default values
 main_folder <- "."
-testing <- TRUE
+testing <- FALSE
 sources <- c("AR", "BO", "BR", "CO", "MX", "US", "LE")
 smoothing_median_window_size <- 3
 smoothing_mean_window_size <- 0

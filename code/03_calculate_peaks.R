@@ -13,7 +13,7 @@ args <- commandArgs(trailingOnly = TRUE)
 
 # Default values
 main_folder <- "."
-testing <- TRUE
+testing <- FALSE
 sources <- c("AR", "BO", "BR", "CO", "MX", "US")
 min_num_of_peptides_in_peak <- 2
 # sd_multiplier_for_cutoff determines cutoff as: mode + sd_multiplier_for_cutoff * sd

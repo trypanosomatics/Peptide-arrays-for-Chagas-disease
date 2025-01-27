@@ -5,7 +5,7 @@ args <- commandArgs(trailingOnly = TRUE)
 
 # Default values
 main_folder <- "."
-testing <- TRUE
+testing <- FALSE
 peaks_tag <- "4SD_2pep"
 
 # User values
