@@ -24,7 +24,7 @@ if (!require(pheatmap, quietly = TRUE)) {
 
 #### MAIN FUNCTION ####
 alanine_scan <- function(main_folder, testing, selected_protein) {
-
+  
   ### estimateSignalChanges ###
   ## This function estimates the signal change per residue and for each sample analyzed in one protein.
   estimateSignalChanges = function(selected_protein) {
@@ -102,6 +102,16 @@ alanine_scan <- function(main_folder, testing, selected_protein) {
     return(heatmap)
   } 
   
+  splitData <- function(changeDT_total) {
+    changeDT_total <- dt
+    setDT(changeDT_total)
+    group_mapping <- unique(changeDT_total[, .(alanine_position_start)])
+    group_mapping[, group := cumsum(c(1, diff(alanine_position_start) != 1))]
+    changeDT_total <- merge(changeDT_total, group_mapping, by = "alanine_position_start", all.x = TRUE)
+    splitted_data <- split(changeDT_total, by = "group")
+    return(splitted_data)
+  }
+  
   # setwd(project_folder)
   design_alanine <- read.csv(design_alanine_file, sep = "\t")
   
@@ -129,22 +139,34 @@ alanine_scan <- function(main_folder, testing, selected_protein) {
     Chips_roche_norm <- rbind(Chips_roche_norm,Chips_roche_norm_dat)
   } #Load all micro-array results for all samples
   
-    proteins_to_process <- if (!is.null(selected_protein)) {
+  proteins_to_process <- if (!is.null(selected_protein)) {
     unique(design_alanine$protein[design_alanine$protein == selected_protein])
   } else {
-      unique(design_alanine$protein)
+    unique(design_alanine$protein)
   }
   
   for (protein_to_estimate in proteins_to_process) {
     dt <- estimateSignalChanges(protein_to_estimate)
-    matrix <- generateHeatmapMatrix(dt)  
+    split_dt <- splitData(dt)
+    matrix <- lapply(split_dt, generateHeatmapMatrix)
     #### SAVE RESULTS ####
     write.table(dt,paste0(project_folder, "/outputs/07_alanine_scan_raw_data/Raw_data_signal_change_alanine_scan_", protein_to_estimate,".tsv"),sep = "\t")  #long format
-    write.table(matrix,paste0(project_folder, "/outputs/07_alanine_scan_raw_data/Raw_data_signal_change_matrix_alanine_scan_", protein_to_estimate,".tsv"),sep = "\t") #matrix for heatmap
+    
+    for (i in seq_along(matrix)) {
+      write.table(
+        matrix[[i]],
+        paste0(project_folder, "/outputs/07_alanine_scan_raw_data/Raw_data_signal_change_matrix_alanine_scan_", protein_to_estimate, "_group_", i, ".tsv"), 
+        sep = "\t", row.names = TRUE) #matrix for heatmap
+    }
     
     # using "pheatmap" package you could visualize results as in the manuscript.
-    pdf(file = paste0(project_folder, "/outputs/07_alanine_scan_raw_data/Heatmap_alanine_scan_", protein_to_estimate,".pdf"),height = 12, width = 12)
-    print(make_heatmap(temp_matrix = matrix,selected_protein = protein_to_estimate))
-    dev.off()
+    for (i in seq_along(matrix)) {
+      pdf(
+        file = paste0(project_folder, "/outputs/07_alanine_scan_raw_data/Heatmap_alanine_scan_", protein_to_estimate, "_group_", i, ".pdf"),
+        height = 12, width = 12
+      )
+      print(make_heatmap(temp_matrix = matrix[[i]], selected_protein = paste0(protein_to_estimate, "_group_", i)))
+      dev.off()
+    }
   }
 }
