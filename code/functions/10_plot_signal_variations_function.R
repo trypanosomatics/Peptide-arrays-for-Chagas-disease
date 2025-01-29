@@ -69,8 +69,8 @@ process_files <- function(project_folder, type_data, raw_data_suffix, normalized
           pivot_longer(cols = -`Reporter Name`, names_to = "Sample", values_to = "Signal")
         
         if(type_data == "pools"){
-          data_long$source <- sapply(strsplit(data_long[,2], "_"), `[`, 1)
-          data_long$type <- sapply(strsplit(data_long[,2], "_"), `[`, 2)
+          data_long$source <- sapply(strsplit(data_long[[2]], "_"), `[`, 1)
+          data_long$type <- sapply(strsplit(data_long[[2]], "_"), `[`, 2)
           data_long$type <- as.factor(data_long$type)
           data_long$source <- as.factor(data_long$source)}
         else{
@@ -95,8 +95,8 @@ process_files <- function(project_folder, type_data, raw_data_suffix, normalized
           pivot_longer(cols = -`Reporter Name`, names_to = "Sample", values_to = "Signal")
         
         if(type_data == "pools"){
-          data_long$source <- sapply(strsplit(data_long[,2], "_"), `[`, 1)
-          data_long$type <- sapply(strsplit(data_long[,2], "_"), `[`, 2)
+          data_long$source <- sapply(strsplit(data_long[[2]], "_"), `[`, 1)
+          data_long$type <- sapply(strsplit(data_long[[2]], "_"), `[`, 2)
           data_long$type <- as.factor(data_long$type)
           data_long$source <- as.factor(data_long$source)}
         else{
@@ -245,7 +245,7 @@ plot_density <- function(project_folder, type_data, raw_data_suffix, normalized_
   Negatives <- NE_raw_plot + (NE_norm_plot + woaxis) + (NE_smooth_plot + woaxis) + plot_annotation(title = "Negatives")
   
   #Save plot
-  ggsave(filename = sprintf("%s/Signal_negatives_%s.pdf", output_folder, type_data.pdf, output_folder), plot = Negatives, device = "pdf", width = 10, height = 8)
+  ggsave(filename = sprintf("%s/outputs/08_plots/Signal_negatives_%s.pdf", project_folder, type_data), plot = Negatives, device = "pdf", width = 10, height = 8)
   
   }
   
@@ -265,7 +265,7 @@ plot_density <- function(project_folder, type_data, raw_data_suffix, normalized_
   Positives <- PO_raw_plot + (PO_norm_plot + woaxis) + (PO_smooth_plot + woaxis) + plot_annotation(title = "Positives")
   
   #Save plot
-  ggsave(filename = sprintf("%s/Signal_positives_%s.pdf", output_folder, type_data), plot = Positives, device = "pdf", width = 10, height = 8)
+  ggsave(filename = sprintf("%s/outputs/08_plots/Signal_positives_%s.pdf", project_folder, type_data), plot = Positives, device = "pdf", width = 10, height = 8)
   
 }
 
