@@ -13,6 +13,7 @@ sd_multiplier_for_cutoff <- 4
 only_proteins_above <- 0
 only_proteins_below <- 0
 output_suffix <- NULL
+fixed_scale <- TRUE
 
 # User values
 if (length(args) == 0) {
@@ -47,6 +48,9 @@ if (length(args) == 0) {
     }
     if (args[i] == "--output_suffix") {
       output_suffix <- args[i + 1]
+    }
+    if (args[i] == "--fixed_scale") {
+      fixed_scale <- args[i + 1]
     }
   }
 }
@@ -103,7 +107,7 @@ if (!dir.exists(output_folder)) {
 functions_folder <- sprintf("%s/code/functions", main_folder)
 
 #### CALL MAIN FUNCTION ####
-source(sprintf("%s/08_plot_protein_profiles_function.R", functions_folder))
+source(sprintf("%s/08_pools_plot_protein_profiles_function.R", functions_folder))
 
 plot_proteins(project_folder = project_folder,
               input_folder = input_folder,
@@ -115,7 +119,8 @@ plot_proteins(project_folder = project_folder,
               only_proteins_above = only_proteins_above,
               only_proteins_below = only_proteins_below,
               sd_multiplier_for_cutoff = sd_multiplier_for_cutoff,
-              output_suffix = output_suffix)
+              output_suffix = output_suffix,
+              fixed_scale = fixed_scale)
 
 plot_parameters(geom_point_size_parameter =  geom_point_size, geom_line_size_parameter = geom_line_size,
                 title_size_parameter = title_size, axis_title_size_parameter = axis_title_size, axis_text_size_parameter = axis_text_size, 
