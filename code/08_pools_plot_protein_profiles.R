@@ -27,7 +27,7 @@ if (length(args) == 0) {
       testing <- as.logical(args[i + 1])
     }
     if (args[i] == "--sources") {
-      sources <- unlist(strsplit(args[i + 1], ",")) # Divide sources si se pasan como cadena separada por comas
+      sources <- unlist(strsplit(args[i + 1], ","))
     }
     if (args[i] == "--profile_data_suffix") {
       profile_data_suffix <- args[i + 1]
@@ -39,8 +39,39 @@ if (length(args) == 0) {
     if (args[i] == "--sd_multiplier_for_cutoff") {
       sd_multiplier_for_cutoff <- as.numeric(args[i + 1])
     }
+    if (args[i] == "--only_proteins_above") {
+      only_proteins_above <- as.numeric(args[i + 1])
+    }
+    if (args[i] == "--only_proteins_below") {
+      only_proteins_below <- as.numeric(args[i + 1])
+    }
+    if (args[i] == "--output_suffix") {
+      output_suffix <- args[i + 1]
+    }
   }
 }
+
+# Other plot parameters
+geom_point_size <- 1.5
+geom_line_size <- 0.5
+
+title_size <- 16
+axis_title_size <- 16
+axis_text_size <- 16
+axis_ticks_length <- 0.2
+panel_background_size <- 1
+plot_margin_l <- 0
+plot_margin_r <- 0.5
+
+geom_errorbar_width <- 1
+geom_errorbar_size <- 0.5
+
+legend_x <- 0.8
+legend_y <- 0.9
+legend_text_size <- 12
+legend_element_width <- 2
+legend_element_height <- 1.5
+
 
 # Print values
 cat("Main folder:", main_folder, "\n")
@@ -85,3 +116,12 @@ plot_proteins(project_folder = project_folder,
               only_proteins_below = only_proteins_below,
               sd_multiplier_for_cutoff = sd_multiplier_for_cutoff,
               output_suffix = output_suffix)
+
+plot_parameters(geom_point_size_parameter =  geom_point_size, geom_line_size_parameter = geom_line_size,
+                title_size_parameter = title_size, axis_title_size_parameter = axis_title_size, axis_text_size_parameter = axis_text_size, 
+                axis_ticks_length_parameter = axis_ticks_length, panel_background_size_parameter = panel_background_size, 
+                plot_margin_l_parameter = plot_margin_l, plot_margin_r_parameter = plot_margin_r,
+                geom_errorbar_width_parameter = geom_errorbar_width, geom_errorbar_size_parameter = geom_errorbar_size,
+                legend_x_parameter = legend_x, legend_y_parameter = legend_y, legend_text_size_parameter = legend_text_size, 
+                legend_element_width_parameter = legend_element_width, legend_element_height_parameter = legend_element_height)
+

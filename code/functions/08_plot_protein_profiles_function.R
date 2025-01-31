@@ -22,6 +22,32 @@ if (!require(gridExtra, quietly = TRUE)) {
   library(gridExtra)
 }
 
+plot_parameters <- function(geom_point_size_parameter, geom_line_size_parameter,
+                            title_size_parameter, axis_title_size_parameter, axis_text_size_parameter, 
+                            axis_ticks_length_parameter, panel_background_size_parameter, 
+                            plot_margin_l_parameter, plot_margin_r_parameter,
+                            geom_errorbar_width_parameter, geom_errorbar_size_parameter,
+                            legend_x_parameter, legend_y_parameter, legend_text_size_parameter, 
+                            legend_element_width_parameter, legend_element_height_parameter)
+{
+  geom_point_size <<- geom_point_size_parameter
+  geom_line_size <<- geom_line_size_parameter
+  title_size <<- title_size_parameter
+  axis_title_size <<- axis_title_size_parameter
+  axis_text_size <<- axis_text_size_parameter
+  axis_ticks_length <<- axis_ticks_length_parameter
+  panel_background_size <<- panel_background_size_parameter
+  plot_margin_l <<- plot_margin_l_parameter
+  plot_margin_r <<- plot_margin_r_parameter
+  geom_errorbar_width <<- geom_errorbar_width_parameter
+  geom_errorbar_size <<- geom_errorbar_size_parameter
+  legend_x <<- legend_x_parameter
+  legend_y <<- legend_y_parameter
+  legend_text_size <<- legend_text_size_parameter
+  legend_element_width <<- legend_element_width_parameter
+  legend_element_height <<- legend_element_height_parameter
+}
+
 #############################-
 #### Auxiliary Functions ####
 #############################-
@@ -41,11 +67,11 @@ prepare_plot_data <- function(
   # LOAD THE DATA NECESSARY
   input_files <- list.files(input_folder, pattern = profile_data_suffix, full.names = TRUE)
   input_files <- input_files[grepl(paste(sources, collapse = "|"), input_files)]
-
+  
   if (length(input_files) == 0) {
     stop("No files found matching the given profile_data_suffix and sources.")
   }
-
+  
   # Get data
   all_plot_data <- do.call(rbind, lapply(input_files, read.delim, stringsAsFactors = FALSE))
   
@@ -110,27 +136,6 @@ plotProteinProfile_v3 <- function(plot_data, x_column_name, y_column_name, group
                                   show_errors = 0, error_min_column_name = "", error_max_column_name = "",
                                   show_legend = 0,
                                   fixed_scale = 0, fixed_scale_max = 0) {
-  geom_point_size <- 1.5
-  
-  geom_line_size <- 0.5
-  geom_line_linetype <- "solid"
-  
-  title_size <- 16
-  axis_title_size <- 16
-  axis_text_size <- 16
-  axis_ticks_length <- 0.2
-  panel_background_size <- 1
-  plot_margin_l <- 0
-  plot_margin_r <- 0.5
-  
-  geom_errorbar_width <- 1
-  geom_errorbar_size <- 0.5
-  
-  legend_x <- 0.8
-  legend_y <- 0.9
-  legend_text_size <- 12
-  legend_element_width <- 2
-  legend_element_height <- 1.5
   
   plotProteinProfileDetailed_v3(plot_data = plot_data, x_column_name = x_column_name, y_column_name = y_column_name, group_column_name = group_column_name, foreground_group = foreground_group, background_group = background_group,
                                 cutoffs_y = cutoffs_y,
@@ -148,13 +153,13 @@ plotProteinProfile_v3 <- function(plot_data, x_column_name, y_column_name, group
 plotProteinProfileDetailed_v3 <- function(plot_data, x_column_name, y_column_name, group_column_name, foreground_group, background_group,
                                           cutoffs_y = c(),
                                           plot_title = "", x_label = "X", y_label = "Y",
-                                          geom_point_size = 0.5,
-                                          geom_line_size = 0.5,
-                                          title_size = 16, axis_title_size = 16, axis_text_size = 16, axis_ticks_length = 0.2, panel_background_size = 1, plot_margin_l = 0.5, plot_margin_r = 0.5,
+                                          geom_point_size = geom_point_size,
+                                          geom_line_size = geom_line_size,
+                                          title_size = title_size, axis_title_size = axis_title_size, axis_text_size = axis_text_size, axis_ticks_length = axis_ticks_length, panel_background_size = panel_background_size, plot_margin_l = plot_margin_l, plot_margin_r = plot_margin_r,
                                           legend_labels = c(), line_colors = c(),
                                           manual_cutoff_color = c(), manual_cutoff_type = c(), manual_cutoff_size = c(), cutoff_above_plot = 1,
-                                          show_errors = 0, error_min_column_name = "", error_max_column_name = "", geom_errorbar_width = 1, geom_errorbar_size = 0.5,
-                                          show_legend = 0, legend_x = 0.8, legend_y = 0.9, legend_text_size = 12, legend_element_width = 2, legend_element_height = 1.5,
+                                          show_errors = 0, error_min_column_name = "", error_max_column_name = "", geom_errorbar_width = geom_errorbar_width, geom_errorbar_size = geom_errorbar_size,
+                                          show_legend = 0, legend_x = legend_x, legend_y = legend_y, legend_text_size = legend_text_size, legend_element_width = legend_element_width, legend_element_height = legend_element_height,
                                           fixed_scale = 0, fixed_scale_max = 0) {
   plot_data_aux <- plot_data
   plot_data_aux[1] <- plot_data_aux[1]
@@ -552,7 +557,7 @@ plot_proteins = function(project_folder,
   all_plot_data <- plot_data_result$all_plot_data
   plot_order <- plot_data_result$plot_order
   proteins_to_plot <- plot_data_result$proteins_to_plot
-
+  
   ############################-
   #### CONFIGURE THE PLOT ####
   ############################-
@@ -581,7 +586,7 @@ plot_proteins = function(project_folder,
   
   mode_aux <- normalization_global_statistics$mode
   sd_aux <- normalization_global_statistics$sd
-
+  
   # PLOT DATA
   plot_data_folder <- input_folder
   plot_data_file_suffix <- profile_data_suffix
