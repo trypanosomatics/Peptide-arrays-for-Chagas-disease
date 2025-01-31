@@ -7,7 +7,7 @@ args <- commandArgs(trailingOnly = TRUE)
 main_folder <- "."
 testing <- FALSE
 sources <- c("AR", "BO", "BR", "CO", "MX", "US", "LE")
-profile_data_suffix <- "smoothed.tsv"
+profile_data_suffix <- "smoothed_signals.tsv"
 protein <- NULL  
 sd_multiplier_for_cutoff <- 4
 only_proteins_above <- 0
