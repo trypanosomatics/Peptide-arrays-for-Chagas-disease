@@ -5,10 +5,8 @@ args <- commandArgs(trailingOnly = TRUE)
 
 # Default values
 main_folder <- "."
-#main_folder <- "C://Users/romer/Documentos/Peptide-arrays-for-Chagas-disease/Peptide-arrays-for-Chagas-disease/"
-testing <- FALSE
+testing <- TRUE
 type_data <- "pools" #or "individual_serums"
-#type_data <- "individual_serums"
 raw_data_suffix <- "raw\\.tsv$"
 normalized_data_suffix <- "processed\\.tsv$"
 smoothed_data_suffix <- "_smoothed_signals\\.tsv$"
