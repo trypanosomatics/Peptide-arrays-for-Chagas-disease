@@ -41,7 +41,11 @@ for (i in seq(1, length(args), by = 2)) {
     sequence_logo_plot <- as.logical(args[i + 1])
   }
   if (args[i] == "--sequence_logo_source") {
-    sequence_logo_source <- args[i + 1]
+    if (args[i + 1] == "all") {
+      sequence_logo_source <- "all"
+    } else {
+      sequence_logo_source <- unlist(strsplit(args[i + 1], ","))
+    }
   }
 }
 

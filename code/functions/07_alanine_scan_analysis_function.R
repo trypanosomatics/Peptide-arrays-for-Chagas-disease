@@ -148,7 +148,7 @@ alanine_scan <- function(main_folder, testing, selected_protein, heatmap_plot, s
       sub_signal_change_per_position <- sub_signal_change_per_position[sub_signal_change_per_position$protein == protein_id]
     }
     
-    if (sources != "average") {
+    if (sources != "all") {
       sub_signal_change_per_position <- sub_signal_change_per_position[sample %in% sources]
     }
     
