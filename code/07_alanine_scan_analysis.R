@@ -21,7 +21,7 @@ testing <- FALSE
 selected_protein <- NULL
 heatmap_plot <- TRUE
 sequence_logo_plot <- TRUE
-sequence_logo_source <- "average"
+sequence_logo_source <- "all"
 
 
 for (i in seq(1, length(args), by = 2)) {
@@ -49,7 +49,13 @@ for (i in seq(1, length(args), by = 2)) {
   }
 }
 
-#### OTHER PARAMETERS ####  
+# Print values
+cat("Main folder:", main_folder, "\n")
+cat("Testing:", testing, "\n")
+cat("Selected_protein:", paste(selected_protein, collapse = ", "), "\n")
+cat("Heatmap_plot:", heatmap_plot, "\n")
+cat("Sequence_logo_plot:", sequence_logo_plot, "\n")
+cat("Sequence_logo_source", paste(sequence_logo_source, collapse = ", "), "\n")
 
 
 #### PATH CONFIG ####
