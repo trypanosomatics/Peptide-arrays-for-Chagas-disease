@@ -210,7 +210,7 @@ plot_proteins = function(project_folder,
   }
   
   graphics.off()
-  pdf(output_file, width = 14, height = 21)
+  pdf(output_file, width = 22, height = 11)
   
   for (protein_for in proteins_to_plot) {
     writeLines(sprintf("Plotting %s...", protein_for))
@@ -244,7 +244,7 @@ plot_proteins = function(project_folder,
                                        type = threshold_label),
                      aes(x = x, xend = xend, y = y, yend = yend, color = type), 
                      linetype = "dashed", size = 0.5)+
-        labs(title = source_for, x = "Peptide Position", y = "Signal", color = "Type") +
+        labs(title = source_for, x = "Peptide Position", y = "Signal", color = protein_for) +
         theme_bw() +
         theme(panel.grid.major = element_line(linewidth = 0.1, colour = "gray92"),
               panel.grid.minor = element_line(linewidth = 0.1, colour = "gray92"),
