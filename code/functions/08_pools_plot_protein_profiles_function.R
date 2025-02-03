@@ -21,6 +21,11 @@ if (!require(gridExtra, quietly = TRUE)) {
   install.packages("gridExtra", repos = "http://cran.rstudio.com/", dependencies = TRUE)
   library(gridExtra)
 }
+if (!require(patchwork, quietly = TRUE)) {
+  writeLines("Installing library 'patchwork' for R")
+  install.packages("patchwork", repos = "http://cran.rstudio.com/", dependencies = TRUE)
+  library(patchwork)
+}
 
 plot_parameters <- function(geom_point_size_parameter, geom_line_size_parameter,
                             title_size_parameter, axis_title_size_parameter, axis_text_size_parameter, 
