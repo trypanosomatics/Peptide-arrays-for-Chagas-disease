@@ -27,31 +27,6 @@ if (!require(patchwork, quietly = TRUE)) {
   library(patchwork)
 }
 
-plot_parameters <- function(geom_point_size_parameter, geom_line_size_parameter,
-                            title_size_parameter, axis_title_size_parameter, axis_text_size_parameter, 
-                            axis_ticks_length_parameter, panel_background_size_parameter, 
-                            plot_margin_l_parameter, plot_margin_r_parameter,
-                            geom_errorbar_width_parameter, geom_errorbar_size_parameter,
-                            legend_x_parameter, legend_y_parameter, legend_text_size_parameter, 
-                            legend_element_width_parameter, legend_element_height_parameter)
-{
-  geom_point_size <<- geom_point_size_parameter
-  geom_line_size <<- geom_line_size_parameter
-  title_size <<- title_size_parameter
-  axis_title_size <<- axis_title_size_parameter
-  axis_text_size <<- axis_text_size_parameter
-  axis_ticks_length <<- axis_ticks_length_parameter
-  panel_background_size <<- panel_background_size_parameter
-  plot_margin_l <<- plot_margin_l_parameter
-  plot_margin_r <<- plot_margin_r_parameter
-  geom_errorbar_width <<- geom_errorbar_width_parameter
-  geom_errorbar_size <<- geom_errorbar_size_parameter
-  legend_x <<- legend_x_parameter
-  legend_y <<- legend_y_parameter
-  legend_text_size <<- legend_text_size_parameter
-  legend_element_width <<- legend_element_width_parameter
-  legend_element_height <<- legend_element_height_parameter
-}
 
 #############################-
 #### Auxiliary Functions ####
