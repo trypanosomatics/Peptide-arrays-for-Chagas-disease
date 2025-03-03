@@ -43,9 +43,9 @@ for (i in seq(1, length(args), by = 2)) {
 setwd(main_folder)
 
 project_folder <- if (testing) {
-  sprintf("%sdata/test_data", main_folder)
+  sprintf("%s/data/test_data", main_folder)
 } else {
-  sprintf("%sdata/chagastope_data", main_folder)
+  sprintf("%s/data/chagastope_data", main_folder)
 }
 
 output_folder <- sprintf("%s/outputs/08_plots", project_folder)
@@ -54,7 +54,7 @@ if (!dir.exists(output_folder)) {
   dir.create(output_folder, recursive = TRUE)
 }
 
-functions_folder <- sprintf("%scode/functions", main_folder)
+functions_folder <- sprintf("%s/code/functions", main_folder)
 functions_file <- sprintf("%s/10_plot_signal_variations_function.R", functions_folder)
 
 #### CALL MAIN FUNCTION ####
