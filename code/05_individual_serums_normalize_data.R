@@ -58,6 +58,10 @@ design_data_file <- sprintf("%s/inputs/03_individual_serums_array_design/Supplem
 
 raw_data_folder <- sprintf("%s/inputs/04_individual_serums_raw_data", project_folder)
 
+if (!testing && length(list.files(raw_data_folder)) == 0) {
+  stop("Download the CHAGASTOPE Assay Individual Serums Data and CHAGASTOPE Assay Individual Serums Design Data to perform this operation. Or use the test subset data downloaded with this repository using --testing TRUE")
+}
+
 output_folder <- sprintf("%s/outputs/05_individual_serums_normalized_data", project_folder)
 output_suffix <- "_processed.tsv"
 

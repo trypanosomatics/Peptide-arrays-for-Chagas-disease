@@ -66,7 +66,12 @@ if (testing == TRUE) {
   project_folder <- sprintf("%s/data/chagastope_data", main_folder)
 }
 
-design_data_file <- sprintf("%s/inputs/03_individual_serums_array_design/Supplementary File S09 - Mapping of CHAGASTOPE-v2 data to T cruzi proteins.tsv", project_folder)
+design_data_folder <- sprintf("%s/inputs/03_individual_serums_array_design", project_folder)
+design_data_file <- sprintf("%s/Supplementary File S09 - Mapping of CHAGASTOPE-v2 data to T cruzi proteins.tsv", design_data_folder)
+
+if (!testing && length(list.files(design_data_folder)) == 0) {
+  stop("Download the CHAGASTOPE Assay Individual Serums Data and CHAGASTOPE Assay Individual Serums Design Data to perform this operation. Or use the test subset data downloaded with this repository using --testing TRUE")
+}
 
 normalized_data_folder <- sprintf("%s/outputs/05_individual_serums_normalized_data", project_folder)
 

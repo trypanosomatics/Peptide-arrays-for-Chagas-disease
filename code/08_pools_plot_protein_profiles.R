@@ -79,6 +79,12 @@ input_folder <- sprintf("%s/outputs/02_pools_smoothed_data", project_folder)
 design_file <- sprintf("%s/inputs/01_pools_array_design/Supplementary File S08 - Mapping of CHAGASTOPE-v1 data to T cruzi proteins.tsv", project_folder)
 output_folder <- sprintf("%s/outputs/08_plots", project_folder)
 
+design_data_folder <- sprintf("%s/inputs/01_pools_array_design", project_folder)
+
+if (!testing && length(list.files(design_data_folder)) == 0) {
+  stop("Download the CHAGASTOPE Assay Design Data to perform this operation. Or use the test subset data downloaded with this repository using --testing TRUE")
+}
+
 if (!dir.exists(output_folder)) {
   dir.create(output_folder, recursive = TRUE)
 }

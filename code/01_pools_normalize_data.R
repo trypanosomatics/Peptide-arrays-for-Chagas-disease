@@ -43,6 +43,11 @@ project_folder <- if (testing) {
 raw_data_folder <- sprintf("%s/inputs/02_pools_raw_data", project_folder)
 output_folder <- sprintf("%s/outputs/01_pools_normalized_data", project_folder)
 
+if (!testing && length(list.files(raw_data_folder)) == 0) {
+  stop("Download the CHAGASTOPE Assay Pool Data and CHAGASTOPE Assay Design Data to perform this operation. Or use the test subset data downloaded with this repository using --testing TRUE")
+}
+
+
 if (!dir.exists(output_folder)) {
   dir.create(output_folder, recursive = TRUE)
 }

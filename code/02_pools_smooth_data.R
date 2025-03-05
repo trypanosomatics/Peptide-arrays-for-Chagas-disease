@@ -66,6 +66,10 @@ raw_data_folder <- sprintf("%s/inputs/02_pools_raw_data", project_folder)
 design_data_folder <- sprintf("%s/inputs/01_pools_array_design", project_folder)
 output_folder <- sprintf("%s/outputs/02_pools_smoothed_data", project_folder)
 
+if (!testing && (length(list.files(raw_data_folder)) == 0 || length(list.files(design_data_folder)) == 0)) {
+  stop("Download the CHAGASTOPE Assay Pool Data and CHAGASTOPE Assay Design Data to perform this operation. Or use the test subset data downloaded with this repository using --testing TRUE")
+}
+
 functions_folder <- sprintf("%s/code/functions", main_folder)
 functions_file <- sprintf("%s/02_pools_smooth_data_function.R", functions_folder)
 
