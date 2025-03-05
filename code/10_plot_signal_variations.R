@@ -4,7 +4,7 @@
 args <- commandArgs(trailingOnly = TRUE)
 
 # Default values
-main_folder <- "."
+main_folder <- dirname(getwd())
 testing <- TRUE
 type_data <- "pools" #or "individual_serums"
 raw_data_suffix <- "raw\\.tsv$"

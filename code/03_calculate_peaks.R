@@ -12,7 +12,7 @@
 args <- commandArgs(trailingOnly = TRUE)
 
 # Default values
-main_folder <- "."
+main_folder <- dirname(getwd())
 testing <- FALSE
 sources <- c("AR", "BO", "BR", "CO", "MX", "US")
 min_num_of_peptides_in_peak <- 2

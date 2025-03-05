@@ -16,7 +16,7 @@
 args <- commandArgs(trailingOnly = TRUE)
 
 # Default values
-main_folder <- "."
+main_folder <- dirname(getwd())
 testing <- FALSE
 selected_protein <- NULL
 heatmap_plot <- TRUE

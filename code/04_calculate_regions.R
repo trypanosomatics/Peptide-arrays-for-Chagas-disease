@@ -4,7 +4,7 @@
 args <- commandArgs(trailingOnly = TRUE)
 
 # Default values
-main_folder <- "."
+main_folder <- dirname(getwd())
 testing <- FALSE
 peaks_tag <- "4SD_2pep"
 
