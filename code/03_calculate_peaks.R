@@ -20,24 +20,28 @@ min_num_of_peptides_in_peak <- 2
 sd_multiplier_for_cutoff <- NULL #as default is 1 in testing and 4 in chagastope_data
 profile_data_suffix <- ""
 
-for (i in seq(1, length(args), by = 2)) {
-  if (args[i] == "--main_folder") {
-    main_folder <- args[i + 1]
-  }
-  if (args[i] == "--testing") {
-    testing <- as.logical(args[i + 1])
-  }
-  if (args[i] == "--sources") {
-    sources <- unlist(strsplit(args[i + 1], ","))
-  }
-  if (args[i] == "--min_num_of_peptides_in_peak") {
-    min_num_of_peptides_in_peak <- as.numeric(args[i + 1])
-  }
-  if (args[i] == "--sd_multiplier_for_cutoff") {
-    sd_multiplier_for_cutoff <- as.numeric(args[i + 1])
-  }
-  if (args[i] == "--profile_data_suffix") {
-     profile_data_suffix <- paste0(args[i + 1], "_")
+if (length(args) == 0) {
+  cat("No arguments provided. Using default values.\n")
+} else {
+  for (i in seq(1, length(args), by = 2)) {
+    if (args[i] == "--main_folder") {
+      main_folder <- args[i + 1]
+    }
+    if (args[i] == "--testing") {
+      testing <- as.logical(args[i + 1])
+    }
+    if (args[i] == "--sources") {
+      sources <- unlist(strsplit(args[i + 1], ","))
+    }
+    if (args[i] == "--min_num_of_peptides_in_peak") {
+      min_num_of_peptides_in_peak <- as.numeric(args[i + 1])
+    }
+    if (args[i] == "--sd_multiplier_for_cutoff") {
+      sd_multiplier_for_cutoff <- as.numeric(args[i + 1])
+    }
+    if (args[i] == "--profile_data_suffix") {
+      profile_data_suffix <- paste0(args[i + 1], "_")
+    }
   }
 }
 

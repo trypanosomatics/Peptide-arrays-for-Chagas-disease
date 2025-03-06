@@ -23,32 +23,35 @@ heatmap_plot <- TRUE
 sequence_logo_plot <- TRUE
 sequence_logo_source <- "all"
 
-
-for (i in seq(1, length(args), by = 2)) {
-  if (args[i] == "--main_folder") {
-    main_folder <- args[i + 1]
-  }
-  if (args[i] == "--testing") {
-    testing <- as.logical(args[i + 1])
-  }
-  if (args[i] == "--selected_protein") {
-    selected_protein <- unlist(strsplit(args[i + 1], ","))
-  }
-  if (args[i] == "--heatmap_plot") {
-    heatmap_plot <- as.logical(args[i + 1])
-  }
-  if (args[i] == "--sequence_logo_plot") {
-    sequence_logo_plot <- as.logical(args[i + 1])
-  }
-  if (args[i] == "--sequence_logo_source") {
-    if (args[i + 1] == "all") {
-      sequence_logo_source <- "all"
-    } else {
-      sequence_logo_source <- unlist(strsplit(args[i + 1], ","))
+if (length(args) == 0) {
+  cat("No arguments provided. Using default values.\n")
+} else {
+  for (i in seq(1, length(args), by = 2)) {
+    if (args[i] == "--main_folder") {
+      main_folder <- args[i + 1]
+    }
+    if (args[i] == "--testing") {
+      testing <- as.logical(args[i + 1])
+    }
+    if (args[i] == "--selected_protein") {
+      selected_protein <- unlist(strsplit(args[i + 1], ","))
+    }
+    if (args[i] == "--heatmap_plot") {
+      heatmap_plot <- as.logical(args[i + 1])
+    }
+    if (args[i] == "--sequence_logo_plot") {
+      sequence_logo_plot <- as.logical(args[i + 1])
+    }
+    if (args[i] == "--sequence_logo_source") {
+      if (args[i + 1] == "all") {
+        sequence_logo_source <- "all"
+      } else {
+        sequence_logo_source <- unlist(strsplit(args[i + 1], ","))
+      }
     }
   }
 }
-
+  
 # Print values
 cat("Main folder:", main_folder, "\n")
 cat("Testing:", testing, "\n")
@@ -73,7 +76,7 @@ if (testing == TRUE) {
 design_data_folder <- sprintf("%s/inputs/03_individual_serums_array_design", project_folder)
 design_data_file <- sprintf("%s/inputs/03_individual_serums_array_design/Supplementary File S09 - Mapping of CHAGASTOPE-v2 data to T cruzi proteins.tsv", project_folder)
 
-if (!testing && length(list.files(design_data_folder)) == 0) {
+if (!testing && length(setdiff(list.files(design_data_folder), ".gitkeep")) == 0) {
   stop("Download the CHAGASTOPE CHAGASTOPE Assay Individual Serums Design Data to perform this operation. Or use the test subset data downloaded with this repository using --testing TRUE")
 }
 

@@ -81,7 +81,7 @@ output_folder <- sprintf("%s/outputs/08_plots", project_folder)
 
 design_data_folder <- sprintf("%s/inputs/01_pools_array_design", project_folder)
 
-if (!testing && length(list.files(design_data_folder)) == 0) {
+if (!testing && length(setdiff(list.files(design_data_folder), ".gitkeep")) == 0) {
   stop("Download the CHAGASTOPE Assay Design Data to perform this operation. Or use the test subset data downloaded with this repository using --testing TRUE")
 }
 

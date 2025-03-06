@@ -25,27 +25,31 @@ smoothing_mean_window_size <- 0
 smooth_borders_option <- "zeros" 
 output_suffix <- ""
 
-for (i in seq(1, length(args), by = 2)) {
-  if (args[i] == "--main_folder") {
-    main_folder <- args[i + 1]
-  }
-  if (args[i] == "--testing") {
-    testing <- as.logical(args[i + 1])
-  }
-  if (args[i] == "--sources") {
-    sources <- unlist(strsplit(args[i + 1], ","))
-  }
-  if (args[i] == "--smoothing_median_window_size") {
-    smoothing_median_window_size <- as.numeric(args[i + 1])
-  }
-  if (args[i] == "--smoothing_mean_window_size") {
-    smoothing_mean_window_size <- as.numeric(args[i + 1])
-  }
-  if (args[i] == "--smooth_borders_option") {
-    smooth_borders_option <- args[i + 1]
-  }
-    if (args[i] == "--output_suffix") {
-    output_suffix <- paste0(args[i + 1], "_")
+if (length(args) == 0) {
+  cat("No arguments provided. Using default values.\n")
+} else {
+  for (i in seq(1, length(args), by = 2)) {
+    if (args[i] == "--main_folder") {
+      main_folder <- args[i + 1]
+    }
+    if (args[i] == "--testing") {
+      testing <- as.logical(args[i + 1])
+    }
+    if (args[i] == "--sources") {
+      sources <- unlist(strsplit(args[i + 1], ","))
+    }
+    if (args[i] == "--smoothing_median_window_size") {
+      smoothing_median_window_size <- as.numeric(args[i + 1])
+    }
+    if (args[i] == "--smoothing_mean_window_size") {
+      smoothing_mean_window_size <- as.numeric(args[i + 1])
+    }
+    if (args[i] == "--smooth_borders_option") {
+      smooth_borders_option <- args[i + 1]
+    }
+      if (args[i] == "--output_suffix") {
+      output_suffix <- paste0(args[i + 1], "_")
+    }
   }
 }
 
@@ -69,7 +73,7 @@ if (testing == TRUE) {
 design_data_folder <- sprintf("%s/inputs/03_individual_serums_array_design", project_folder)
 design_data_file <- sprintf("%s/Supplementary File S09 - Mapping of CHAGASTOPE-v2 data to T cruzi proteins.tsv", design_data_folder)
 
-if (!testing && length(list.files(design_data_folder)) == 0) {
+if (!testing && length(setdiff(list.files(design_data_folder), ".gitkeep")) == 0) {
   stop("Download the CHAGASTOPE Assay Individual Serums Data and CHAGASTOPE Assay Individual Serums Design Data to perform this operation. Or use the test subset data downloaded with this repository using --testing TRUE")
 }
 

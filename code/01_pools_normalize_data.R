@@ -19,15 +19,19 @@ main_folder <- dirname(getwd())
 testing <- FALSE
 sources <- c("AR", "BO", "BR", "CO", "MX", "US", "LE")
 
-for (i in seq(1, length(args), by = 2)) {
-  if (args[i] == "--main_folder") {
-    main_folder <- args[i + 1]
-  }
-  if (args[i] == "--testing") {
-    testing <- as.logical(args[i + 1])
-  }
-  if (args[i] == "--sources") {
-    sources <- unlist(strsplit(args[i + 1], ","))
+if (length(args) == 0) {
+  cat("No arguments provided. Using default values.\n")
+} else {
+  for (i in seq(1, length(args), by = 2)) {
+    if (args[i] == "--main_folder") {
+      main_folder <- args[i + 1]
+    }
+    if (args[i] == "--testing") {
+      testing <- as.logical(args[i + 1])
+    }
+    if (args[i] == "--sources") {
+      sources <- unlist(strsplit(args[i + 1], ","))
+    }
   }
 }
 
@@ -43,7 +47,7 @@ project_folder <- if (testing) {
 raw_data_folder <- sprintf("%s/inputs/02_pools_raw_data", project_folder)
 output_folder <- sprintf("%s/outputs/01_pools_normalized_data", project_folder)
 
-if (!testing && length(list.files(raw_data_folder)) == 0) {
+if (!testing && length(setdiff(list.files(raw_data_folder), ".gitkeep")) == 0) {
   stop("Download the CHAGASTOPE Assay Pool Data and CHAGASTOPE Assay Design Data to perform this operation. Or use the test subset data downloaded with this repository using --testing TRUE")
 }
 

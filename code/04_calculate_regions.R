@@ -8,16 +8,20 @@ main_folder <- dirname(getwd())
 testing <- FALSE
 peaks_tag <- "4SD_2pep"
 
+if (length(args) == 0) {
+  cat("No arguments provided. Using default values.\n")
+} else {
 # User values
-for (i in seq(1, length(args), by = 2)) {
-  if (args[i] == "--main_folder") {
-    main_folder <- args[i + 1]
-  }
-  if (args[i] == "--testing") {
-    testing <- as.logical(args[i + 1])
-  }
-  if (args[i] == "--peaks_tag") {
-    peaks_tag <- args[i + 1]
+  for (i in seq(1, length(args), by = 2)) {
+    if (args[i] == "--main_folder") {
+      main_folder <- args[i + 1]
+    }
+    if (args[i] == "--testing") {
+      testing <- as.logical(args[i + 1])
+    }
+    if (args[i] == "--peaks_tag") {
+      peaks_tag <- args[i + 1]
+    }
   }
 }
 

@@ -24,16 +24,19 @@ sources <- c("AR_P1", "AR_P2", "AR_P3", "AR_P4", "AR_P5", "AR_P6", "BO_P1", "BO_
              "CO_E6", "CO_E7", "MX_E1", "MX_E2", "MX_E3", "MX_E4", "MX_E5", "MX_E6", "US_E1", "US_E2", "US_E3", "US_E4", "US_E5", "US_E6")
 
 
-
-for (i in seq(1, length(args), by = 2)) {
-  if (args[i] == "--main_folder") {
-    main_folder <- args[i + 1]
-  }
-  if (args[i] == "--testing") {
-    testing <- as.logical(args[i + 1])
-  }
-  if (args[i] == "--sources") {
-    sources <- unlist(strsplit(args[i + 1], ","))
+if (length(args) == 0) {
+  cat("No arguments provided. Using default values.\n")
+} else {
+  for (i in seq(1, length(args), by = 2)) {
+    if (args[i] == "--main_folder") {
+      main_folder <- args[i + 1]
+    }
+    if (args[i] == "--testing") {
+      testing <- as.logical(args[i + 1])
+    }
+    if (args[i] == "--sources") {
+      sources <- unlist(strsplit(args[i + 1], ","))
+    }
   }
 }
 
@@ -58,7 +61,7 @@ design_data_file <- sprintf("%s/inputs/03_individual_serums_array_design/Supplem
 
 raw_data_folder <- sprintf("%s/inputs/04_individual_serums_raw_data", project_folder)
 
-if (!testing && length(list.files(raw_data_folder)) == 0) {
+if (!testing && length(setdiff(list.files(raw_data_folder), ".gitkeep")) == 0) {
   stop("Download the CHAGASTOPE Assay Individual Serums Data and CHAGASTOPE Assay Individual Serums Design Data to perform this operation. Or use the test subset data downloaded with this repository using --testing TRUE")
 }
 
