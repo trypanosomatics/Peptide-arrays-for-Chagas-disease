@@ -39,6 +39,7 @@ normalize_and_process_data <- function(raw_data_folder, output_folder, sources) 
   
   for (source_for in sources) {
     # source_for <- sources[1]
+    print(source_for)
     for (type_for in types) {
       # type_for <- types[1]
       raw_data_file <- sprintf("%s/%s_%s_raw.tsv", raw_data_folder, source_for, type_for)
