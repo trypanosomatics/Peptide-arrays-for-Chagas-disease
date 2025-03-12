@@ -17,7 +17,7 @@ testing <- FALSE
 sources <- c("AR", "BO", "BR", "CO", "MX", "US")
 min_num_of_peptides_in_peak <- 2
 # sd_multiplier_for_cutoff determines cutoff as: mode + sd_multiplier_for_cutoff * sd
-sd_multiplier_for_cutoff <- NULL #as default is 1 in testing and 4 in chagastope_data
+sd_multiplier_for_cutoff <- 4
 profile_data_suffix <- ""
 
 if (length(args) == 0) {

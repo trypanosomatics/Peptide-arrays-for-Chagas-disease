@@ -5,15 +5,7 @@ if (!require(data.table, quietly = TRUE)) {
   library(data.table)
 }
 
-determine_peaks <- function(main_folder, testing, sources, types, project_folder, output_folder, min_num_of_peptides_in_peak, sd_multiplier_for_cutoff = NULL, profile_data_suffix) {
-  
-  if (is.null(sd_multiplier_for_cutoff)) {
-    if (testing == TRUE) {
-      sd_multiplier_for_cutoff <- 1
-    } else {
-      sd_multiplier_for_cutoff <- 4
-    }
-  }
+determine_peaks <- function(main_folder, testing, sources, types, project_folder, output_folder, min_num_of_peptides_in_peak, sd_multiplier_for_cutoff, profile_data_suffix) {
   
   global_statistics_file <- sprintf("%s/outputs/01_pools_normalized_data/global_statistics.tsv", project_folder)
   global_statistics <- fread(global_statistics_file, header = TRUE, sep = "\t", na.strings = NULL)

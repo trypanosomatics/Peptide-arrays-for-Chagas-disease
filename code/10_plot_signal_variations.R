@@ -34,15 +34,21 @@ if (length(args) == 0) {
     if (args[i] == "--smoothed_data_suffix") {
       smoothed_data_suffix <- args[i + 1]
     }
-    if (args[i] == "--y_transformation") {
-      y_transformation <- as.logical(args[i + 1])
-    }
     if (args[i] == "--y_factors") {
       y_factors <- as.numeric(unlist(strsplit(args[i + 1], ",")))
     }
   }
 }
-  
+
+# Print values  
+cat("Main folder:", main_folder, "\n")
+cat("Testing:", testing, "\n")
+cat("Type data:", type_data, "\n")
+cat("Raw data suffix:", raw_data_suffix, "\n")
+cat("Normalized data suffix:", normalized_data_suffix, "\n")
+cat("Smoothed data suffix:", smoothed_data_suffix, "\n")
+cat("Y factors:", y_factors, "\n")
+ 
 #### PATH CONFIG ####
 setwd(main_folder)
 

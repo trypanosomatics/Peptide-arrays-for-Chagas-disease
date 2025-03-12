@@ -48,6 +48,14 @@ output_statistics_mode_decimals <- 2
 output_statistics_sd_decimals <- 2
 
 
+# Print values 
+cat("Main folder:", main_folder, "\n")
+cat("Testing:", testing, "\n")
+cat("Sources:", paste(sources, collapse = ", "), "\n")
+cat("Types:", paste(types, collapse = ", "), "\n")
+cat("Output signal decimals:", output_signal_decimals, "\n")
+
+
 #### PATH CONFIG ####
 if (testing == TRUE) {
   #For testing

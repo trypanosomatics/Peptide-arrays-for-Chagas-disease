@@ -61,6 +61,17 @@ output_signal_mean_decimals <- 2
 output_signal_sd_decimals <- 2
 
 
+# Print values 
+cat("Main folder:", main_folder, "\n")
+cat("Testing:", testing, "\n")
+cat("Sources:", paste(sources, collapse = ", "), "\n")
+cat("Smoothing median window size:", smoothing_median_window_size, "\n")
+cat("Smoothing mean window size:", smoothing_mean_window_size, "\n")
+cat("Smooth borders option:", smooth_borders_option, "\n")
+cat("Types:", paste(types, collapse = ", "), "\n")
+cat("Output suffix:", output_suffix, "\n")
+
+
 #### PATH CONFIG ####
 if (testing == TRUE) {
   #For testing

@@ -35,6 +35,12 @@ if (length(args) == 0) {
   }
 }
 
+# Print values 
+cat("Main folder:", main_folder, "\n")
+cat("Testing:", testing, "\n")
+cat("Sources:", paste(sources, collapse = ", "), "\n")
+
+# CONFIG
 setwd(main_folder)
 
 project_folder <- if (testing) {
