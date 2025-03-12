@@ -9,7 +9,7 @@ testing <- TRUE
 type_data <- "pools" #or "individual_serums"
 raw_data_suffix <- "raw\\.tsv$"
 normalized_data_suffix <- "processed\\.tsv$"
-smoothed_data_suffix <- "_smoothed_signals\\.tsv$"
+smoothed_data_suffix <- "_smoothed\\.tsv$"
 y_factors <- c(10000, 2, 0.5)
 
 if (length(args) == 0) {
