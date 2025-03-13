@@ -1080,6 +1080,7 @@ alanine_scan <- function(main_folder, testing, selected_protein, heatmap_plot, s
     dt <- estimateSignalChanges(protein_to_estimate)
     split_dt <- splitData(dt)
     # sequence_logos <- lapply(split_dt, plotLogo)
+    writeLines(sprintf("Plotting %s...", protein_to_estimate))
     
     matrix <- lapply(split_dt, generateHeatmapMatrix)
     #### SAVE RESULTS ####
