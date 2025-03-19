@@ -63,7 +63,7 @@ process_files <- function(project_folder, type_data, raw_data_suffix, normalized
       
       for (file in files) {
         # file <- files[1]
-        data <- read_delim(file, delim = "\t", trim_ws = TRUE)
+        data <- read_delim(file, delim = "\t", trim_ws = TRUE, show_col_types = FALSE)
         
         data_long <- data %>%
           pivot_longer(cols = -`Reporter Name`, names_to = "Sample", values_to = "Signal")
@@ -89,7 +89,7 @@ process_files <- function(project_folder, type_data, raw_data_suffix, normalized
       files <- list.files(path = path_to_files, pattern = normalized_data_suffix, full.names = TRUE)
 
       for (file in files) {
-        data <- read_delim(file, delim = "\t", trim_ws = TRUE)
+        data <- read_delim(file, delim = "\t", trim_ws = TRUE, show_col_types = FALSE)
         
         data_long <- data %>%
           pivot_longer(cols = -`Reporter Name`, names_to = "Sample", values_to = "Signal")
@@ -116,7 +116,7 @@ process_files <- function(project_folder, type_data, raw_data_suffix, normalized
 
       for (file in files) {
         # file <- files[1]
-        data <- read_delim(file, delim = "\t", trim_ws = TRUE)
+        data <- read_delim(file, delim = "\t", trim_ws = TRUE, show_col_types = FALSE)
         
         all_data_smoothed <- bind_rows(all_data_smoothed, data)
       }
@@ -172,7 +172,7 @@ DensityJitterplot <- function(plot_data, x_column_name, y_column_name, gradient_
           axis.text = element_text(size = axis_text_size, colour = "black"),
           axis.ticks = element_line(colour = "black"),
           axis.ticks.length = unit(axis_ticks_length, "cm"),
-          panel.background = element_rect(size = panel_background_size, colour = "black"),
+          panel.background = element_rect(linewidth = panel_background_size, colour = "black"),
           legend.position = legend_position)
   
   # Plot personalization
