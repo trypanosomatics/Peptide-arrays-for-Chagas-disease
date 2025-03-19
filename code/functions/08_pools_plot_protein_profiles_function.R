@@ -218,7 +218,7 @@ plot_proteins = function(project_folder,
                                        yend = cutoffs_to_plot, 
                                        type = threshold_label),
                      aes(x = x, xend = xend, y = y, yend = yend, color = type), 
-                     linetype = "dashed", size = 0.5)+
+                     linetype = "dashed", linewidth = 0.5)+
         labs(title = source_for, x = "Peptide Position", y = "Signal", color = protein_for) +
         theme_bw() +
         theme(panel.grid.major = element_line(linewidth = 0.1, colour = "gray92"),
