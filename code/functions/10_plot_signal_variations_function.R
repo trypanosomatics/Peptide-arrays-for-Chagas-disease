@@ -1,41 +1,15 @@
 ############################-
 #### Required libraries ####
 ############################-
-if (!require(data.table, quietly = TRUE)) {
-  writeLines("Installing library 'data.table' for R")
-  install.packages("data.table", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-  library(data.table)
-}
-if (!require(readr, quietly = TRUE)) {
-  writeLines("Installing library 'readr' for R")
-  install.packages("readr", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-  library(readr)
-}
-if (!require(dplyr, quietly = TRUE)) {
-  writeLines("Installing library 'dplyr' for R")
-  install.packages("dplyr", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-  library(dplyr)
-}
-if (!require(tidyr, quietly = TRUE)) {
-  writeLines("Installing library 'tidyr' for R")
-  install.packages("tidyr", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-  library(tidyr)
-}
-if (!require(ggplot2, quietly = TRUE)) {
-  writeLines("Installing library 'ggplot2' for R")
-  install.packages("ggplot2", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-  library(ggplot2)
-}
-if (!require(scico, quietly = TRUE)) {
-  writeLines("Installing library 'scico' for R")
-  install.packages("scico", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-  library(scico)
-}
-if (!require(patchwork, quietly = TRUE)) {
-  writeLines("Installing library 'patchwork' for R")
-  install.packages("patchwork", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-  library(patchwork)
-}
+renv::restore()
+
+library(data.table)
+library(readr)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(scico)
+library(patchwork)
 
 ############################-
 #### Auxiliar functions ####

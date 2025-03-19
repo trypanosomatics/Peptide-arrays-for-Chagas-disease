@@ -1,16 +1,8 @@
 #### LIBRARIES ####
-if (!require(data.table, quietly = TRUE)) {
-  writeLines("Installing library 'data.table' for R")
-  install.packages("data.table", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-  library(data.table)
-}
+renv::restore()
 
-if (!require(zoo, quietly = TRUE)) {
-  writeLines("Installing library 'zoo' for R")
-  install.packages("zoo", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-  library(zoo) #rollmean rollmedian
-}
-
+library(data.table)
+library(zoo) #rollmean rollmedian
 
 #### AUXILIAR FUNCTIONS ####
 smoothVector <- function(vector, median_window_size = 5, mean_window_size = 7, borders = "zeros") {

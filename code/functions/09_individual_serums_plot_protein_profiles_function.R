@@ -1,46 +1,17 @@
 ############################-
 #### Required libraries ####
 ############################-
-if (!require(data.table, quietly = TRUE)) {
-  writeLines("Installing library 'data.table' for R")
-  install.packages("data.table", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-  library(data.table)
-}
-if (!require(ggplot2, quietly = TRUE)) {
-  writeLines("Installing library 'ggplot2' for R")
-  install.packages("ggplot2", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-  library(ggplot2)
-}
-if (!require(grid, quietly = TRUE)) {
-  writeLines("Installing library 'grid' for R")
-  install.packages("grid", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-  library(grid)
-}
-if (!require(gridExtra, quietly = TRUE)) {
-  writeLines("Installing library 'gridExtra' for R")
-  install.packages("gridExtra", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-  library(gridExtra)
-}
-if (!require(ggridges, quietly = TRUE)) {
-  writeLines("Installing library 'ggridges' for R")
-  install.packages("ggridges", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-  library(ggridges)
-}
-if (!require(scico, quietly = TRUE)) {
-  writeLines("Installing library 'scico' for R")
-  install.packages("scico", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-  library(scico)
-}
-if (!require(dplyr, quietly = TRUE)) {
-  writeLines("Installing library 'dplyr' for R")
-  install.packages("dplyr", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-  library(dplyr)
-}
-if (!require(ggh4x, quietly = TRUE)) {
-  writeLines("Installing library 'ggh4x' for R")
-  install.packages("ggh4x", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-  library(ggh4x)
-}
+renv::restore()
+
+library(data.table)
+library(ggplot2)
+library(grid)
+library(gridExtra)
+library(ggridges)
+library(scico)
+library(dplyr)
+library(ggh4x)
+
 #############################-
 #### Auxiliary Functions ####
 #############################-

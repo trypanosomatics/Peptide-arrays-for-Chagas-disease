@@ -1,15 +1,8 @@
 #### LIBRARIES ####
-if (!require(data.table, quietly = TRUE)) {
-  writeLines("Installing library 'data.table' for R")
-  install.packages("data.table", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-  library(data.table)
-}
-if (!require(zoo, quietly = TRUE)) {
-  writeLines("Installing library 'zoo' for R")
-  install.packages("zoo", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-  library(zoo)
-}
+renv::restore()
 
+library(data.table)
+library(zoo)
 
 #### AUXILIARY FUNCTIONS ####
 smoothVector <- function(vector, median_window_size, mean_window_size, borders) {

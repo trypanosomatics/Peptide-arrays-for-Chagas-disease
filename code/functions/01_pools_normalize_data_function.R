@@ -1,17 +1,8 @@
 #### LIBRARIES ####
-if (!require(data.table, quietly = TRUE)) {
-  writeLines("Installing library 'data.table' for R")
-  install.packages("data.table", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-  library(data.table)
-}
-if (!require(preprocessCore, quietly = TRUE)) {
-  writeLines("Installing library 'preprocessCore' from Bioconductor")
-  if (!require(BiocManager, quietly = TRUE)) {
-    install.packages("BiocManager")
-  }
-  BiocManager::install("preprocessCore")
-  library(preprocessCore)
-}
+renv::restore()
+
+library(data.table)
+library(preprocessCore)
 
 #### AUXILIARY FUNCTIONS ####
 calculateMode <- function(x, decimals = 0) {

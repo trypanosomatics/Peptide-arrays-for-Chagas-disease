@@ -1,45 +1,12 @@
 #### LIBRARIES ####
-if (!require(data.table, quietly = TRUE)) {
-  writeLines("Installing library 'data.table' for R")
-  install.packages("data.table", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-  library(data.table)
-}
+renv::restore()
 
-if (!require(dplyr, quietly = TRUE)) {
-  writeLines("Installing library 'dplyr' for R")
-  install.packages("dplyr", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-  library(dplyr)
-}
-
-if (!require(reshape2, quietly = TRUE)) {
-  writeLines("Installing library 'reshape2' for R")
-  install.packages("reshape2", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-  library(reshape2)
-}
-
-# if (!require(gtable, quietly = TRUE)) {
-#   writeLines("Installing library 'gtable' for R")
-#   install.packages("gtable", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-#   library(gtable) #for logo, you need version 4.2.3
-# }
-
-if (!require(pheatmap, quietly = TRUE)) {
-  writeLines("Installing library 'pheatmap' for R")
-  install.packages("pheatmap", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-  library(pheatmap)
-}
-
-if (!require(ggplot2, quietly = TRUE)) {
-  writeLines("Installing library 'ggplot2' for R")
-  install.packages("ggplot2", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-  library(ggplot2) #for logo
-}
-
-if (!require(ggseqlogo, quietly = TRUE)) {
-  writeLines("Installing library 'ggseqlogo' for R")
-  install.packages("ggseqlogo", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-  library(ggseqlogo) #for logo, you need version 4.2.3
-}
+library(data.table)
+library(dplyr)
+library(reshape2)
+library(pheatmap)
+library(ggplot2) #for logo
+library(ggseqlogo) #for logo
 
 #### FUNCTION ####
 alanine_scan <- function(main_folder, testing, selected_protein, heatmap_plot, sequence_logo_plot, sequence_logo_source) {

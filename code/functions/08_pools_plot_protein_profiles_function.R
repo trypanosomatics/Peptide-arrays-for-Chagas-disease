@@ -1,32 +1,13 @@
 ############################-
 #### Required libraries ####
 ############################-
-if (!require(data.table, quietly = TRUE)) {
-  writeLines("Installing library 'data.table' for R")
-  install.packages("data.table", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-  library(data.table)
-}
-if (!require(ggplot2, quietly = TRUE)) {
-  writeLines("Installing library 'ggplot2' for R")
-  install.packages("ggplot2", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-  library(ggplot2)
-}
-if (!require(grid, quietly = TRUE)) {
-  writeLines("Installing library 'grid' for R")
-  install.packages("grid", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-  library(grid)
-}
-if (!require(gridExtra, quietly = TRUE)) {
-  writeLines("Installing library 'gridExtra' for R")
-  install.packages("gridExtra", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-  library(gridExtra)
-}
-if (!require(patchwork, quietly = TRUE)) {
-  writeLines("Installing library 'patchwork' for R")
-  install.packages("patchwork", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-  library(patchwork)
-}
+renv::restore()
 
+library(data.table)
+library(ggplot2)
+library(grid)
+library(gridExtra)
+library(patchwork)
 
 #############################-
 #### Auxiliary Functions ####

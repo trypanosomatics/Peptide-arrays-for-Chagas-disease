@@ -1,9 +1,8 @@
 #### LIBRARIES ####
-if (!require(data.table, quietly = TRUE)) {
-  writeLines("Installing library 'data.table' for R")
-  install.packages("data.table", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-  library(data.table)
-}
+renv::restore()
+
+library(data.table)
+
 
 determine_peaks <- function(main_folder, testing, sources, types, project_folder, output_folder, min_num_of_peptides_in_peak, sd_multiplier_for_cutoff, profile_data_suffix) {
   
