@@ -187,4 +187,5 @@ plot_proteins_ridge = function(project_folder, input_folder, design_file, source
     print(p) } 
   
   dev.off()
+  graphics.off()
 }
