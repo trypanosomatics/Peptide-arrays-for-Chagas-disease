@@ -1,50 +1,30 @@
-#### INSTALLING LIBRARIES ####
+#!/usr/bin/env Rscript
+# Shebang, interpreter for executable
 
-writeLines("Installing library 'data.table' for R")
-install.packages("data.table", repos = "http://cran.rstudio.com/", dependencies = TRUE)
+# Install BiocManager if it is not installed
+if (!requireNamespace("BiocManager", quietly = TRUE)) {
+  writeLines("Installing 'BiocManager'...")
+  install.packages("BiocManager", repos = "http://cran.rstudio.com/")
+}
 
-writeLines("Installing library 'preprocessCore' from Bioconductor")
-install.packages("BiocManager")
-BiocManager::install("preprocessCore")
+# Install preprocessCore from Bioconductor
+writeLines("Installing 'preprocessCore' from Bioconductor...")
+BiocManager::install("preprocessCore", ask = FALSE)
 
-writeLines("Installing library 'zoo' for R")
-install.packages("zoo", repos = "http://cran.rstudio.com/", dependencies = TRUE)
+# List of CRAN packages to install
+packages <- c("data.table", "zoo", "dplyr", "reshape2", "pheatmap", "ggplot2", 
+              "ggseqlogo", "gridExtra", "patchwork", "ggridges", "scico", 
+              "ggh4x", "readr", "tidyr")
 
-writeLines("Installing library 'dplyr' for R")
-install.packages("dplyr", repos = "http://cran.rstudio.com/", dependencies = TRUE)
+# Function to install packages if they are not already installed
+install_if_missing <- function(pkg) {
+  if (!requireNamespace(pkg, quietly = TRUE)) {
+    writeLines(paste("Installing package:", pkg, "..."))
+    install.packages(pkg, repos = "http://cran.rstudio.com/", dependencies = TRUE)
+  } else {
+    writeLines(paste("Package already installed:", pkg))
+  }
+}
 
-writeLines("Installing library 'reshape2' for R")
-install.packages("reshape2", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-
-writeLines("Installing library 'pheatmap' for R")
-install.packages("pheatmap", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-
-writeLines("Installing library 'ggplot2' for R")
-install.packages("ggplot2", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-
-writeLines("Installing library 'ggseqlogo' for R")
-install.packages("ggseqlogo", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-
-writeLines("Installing library 'grid' for R")
-install.packages("grid", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-
-writeLines("Installing library 'gridExtra' for R")
-install.packages("gridExtra", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-
-writeLines("Installing library 'patchwork' for R")
-install.packages("patchwork", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-
-writeLines("Installing library 'ggridges' for R")
-install.packages("ggridges", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-
-writeLines("Installing library 'scico' for R")
-install.packages("scico", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-
-writeLines("Installing library 'ggh4x' for R")
-install.packages("ggh4x", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-
-writeLines("Installing library 'readr' for R")
-install.packages("readr", repos = "http://cran.rstudio.com/", dependencies = TRUE)
-
-writeLines("Installing library 'tidyr' for R")
-install.packages("tidyr", repos = "http://cran.rstudio.com/", dependencies = TRUE)
+# Install all packages
+sapply(packages, install_if_missing)
