@@ -20,7 +20,7 @@ packages <- c("data.table", "zoo", "dplyr", "reshape2", "pheatmap", "ggplot2",
 install_if_missing <- function(pkg) {
   if (!requireNamespace(pkg, quietly = TRUE)) {
     writeLines(paste("Installing package:", pkg, "..."))
-    install.packages(pkg, repos = "http://cran.rstudio.com/", dependencies = TRUE)
+    install.packages(pkg)
   } else {
     writeLines(paste("Package already installed:", pkg))
   }
