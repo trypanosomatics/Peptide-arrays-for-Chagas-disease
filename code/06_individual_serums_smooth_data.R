@@ -105,3 +105,5 @@ functions_file <- sprintf("%s/06_individual_serums_smooth_data_function.R", func
 source(functions_file)
 
 smooth_serums(main_folder, testing, sources, output_folder, smoothing_median_window_size, smoothing_mean_window_size, smooth_borders_option, output_suffix)
+
+cat("Output saved in:", output_folder, "\n")

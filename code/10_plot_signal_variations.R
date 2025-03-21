@@ -72,3 +72,5 @@ source(functions_file)
 
 result <- plot_density(project_folder, type_data, raw_data_suffix, 
                        normalized_data_suffix, smoothed_data_suffix, y_factors, plot_data)
+
+cat("Output saved in:", output_folder, "\n")

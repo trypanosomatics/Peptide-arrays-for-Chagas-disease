@@ -93,3 +93,5 @@ region_data <- processAntigenicRegions(
   detailed_region_output_file, 
   summary_region_output_file
 )
+
+cat("Output saved in:", output_folder, "\n")

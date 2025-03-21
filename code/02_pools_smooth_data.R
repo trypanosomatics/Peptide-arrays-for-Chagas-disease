@@ -87,3 +87,5 @@ output_signal_mean_decimals <- 2
 output_signal_sd_decimals <- 2
 
 smooth_data(design_data_file, design_group, normalized_data_folder, output_folder, normalized_data_suffix, sources, smoothing_median_window_size, smoothing_mean_window_size, smooth_borders_option, output_type_order, output_signal_mean_decimals, output_signal_sd_decimals, output_suffix)
+
+cat("Output saved in:", output_folder, "\n")

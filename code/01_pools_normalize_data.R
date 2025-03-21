@@ -70,3 +70,5 @@ functions_file <- sprintf("%s/01_pools_normalize_data_function.R", functions_fol
 source(functions_file)
 
 normalize_and_process_data(raw_data_folder, output_folder, sources)
+
+cat("Output saved in:", output_folder, "\n")

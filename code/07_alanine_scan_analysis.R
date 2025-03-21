@@ -88,3 +88,5 @@ functions_file <- sprintf("%s/07_alanine_scan_analysis_function.R", functions_fo
 source(functions_file)
 
 alanine_scan(main_folder, testing, selected_protein, heatmap_plot, sequence_logo_plot, sequence_logo_source)
+
+cat("Output saved in:", output_folder, "\n")

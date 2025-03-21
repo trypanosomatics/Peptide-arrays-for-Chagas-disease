@@ -104,3 +104,5 @@ plot_proteins_ridge(project_folder = project_folder,
               output_suffix = output_suffix,
               pdf_height = pdf_height,
               pdf_width = pdf_width)
+
+cat("Output saved in:", output_folder, "\n")

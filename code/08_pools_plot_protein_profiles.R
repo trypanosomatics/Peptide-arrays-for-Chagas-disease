@@ -107,3 +107,4 @@ plot_proteins(project_folder = project_folder,
               output_suffix = output_suffix,
               fixed_scale = fixed_scale)
 
+cat("Output saved in:", output_folder, "\n")
