@@ -1,8 +1,6 @@
 ############################-
 #### Required libraries ####
 ############################-
-renv::restore()
-
 library(data.table)
 library(ggplot2)
 library(grid)

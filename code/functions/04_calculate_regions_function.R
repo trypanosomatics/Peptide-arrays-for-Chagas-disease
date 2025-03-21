@@ -1,5 +1,4 @@
 #### LIBRARIES ####
-renv::restore()
 library(data.table)
 
 #### AUXILIAR FUNCTIONS ####

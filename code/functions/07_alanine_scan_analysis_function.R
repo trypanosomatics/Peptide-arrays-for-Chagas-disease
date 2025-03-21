@@ -1,6 +1,4 @@
 #### LIBRARIES ####
-renv::restore()
-
 library(data.table)
 library(dplyr)
 library(reshape2)

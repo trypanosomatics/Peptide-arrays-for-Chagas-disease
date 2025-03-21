@@ -1,6 +1,4 @@
 #### LIBRARIES ####
-renv::restore()
-
 library(data.table)
 library(zoo) #rollmean rollmedian
 
