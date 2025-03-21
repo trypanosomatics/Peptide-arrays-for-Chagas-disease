@@ -89,4 +89,5 @@ source(functions_file)
 
 alanine_scan(main_folder, testing, selected_protein, heatmap_plot, sequence_logo_plot, sequence_logo_source)
 
+output_folder <- sprintf("%s/outputs/07_alanine_scan_raw_data", project_folder)
 cat("Output saved in:", output_folder, "\n")
