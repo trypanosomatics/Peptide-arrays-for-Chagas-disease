@@ -74,7 +74,7 @@ if (testing == TRUE) {
 
 input_folder <- sprintf("%s/outputs/06_individual_serums_smoothed_data", project_folder)
 design_file <- sprintf("%s/inputs/03_individual_serums_array_design/Supplementary File S09 - Mapping of CHAGASTOPE-v2 data to T cruzi proteins.tsv", project_folder)
-output_folder <- sprintf("%s/outputs/08_plots", project_folder)
+output_folder <- sprintf("%s/outputs/08_09_10_plots", project_folder)
 
 design_data_folder <- sprintf("%s/inputs/03_individual_serums_array_design", project_folder)
 

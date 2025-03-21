@@ -58,7 +58,7 @@ project_folder <- if (testing) {
   sprintf("%s/data/chagastope_data", main_folder)
 }
 
-output_folder <- sprintf("%s/outputs/08_plots", project_folder)
+output_folder <- sprintf("%s/outputs/08_09_10_plots", project_folder)
 
 if (!dir.exists(output_folder)) {
   dir.create(output_folder, recursive = TRUE)

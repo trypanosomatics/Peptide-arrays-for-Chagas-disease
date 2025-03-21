@@ -217,7 +217,7 @@ plot_density <- function(project_folder, type_data, raw_data_suffix, normalized_
   Negatives <- NE_raw_plot + (NE_norm_plot + woaxis) + (NE_smooth_plot + woaxis) + plot_annotation(title = "Negatives")
   
   #Save plot
-  ggsave(filename = sprintf("%s/outputs/08_plots/Signal_negatives_%s.pdf", project_folder, type_data), plot = Negatives, device = "pdf", width = 10, height = 8)
+  ggsave(filename = sprintf("%s/outputs/08_09_10_plots/Signal_negatives_%s.pdf", project_folder, type_data), plot = Negatives, device = "pdf", width = 10, height = 8)
   
   }
   
@@ -237,7 +237,7 @@ plot_density <- function(project_folder, type_data, raw_data_suffix, normalized_
   Positives <- PO_raw_plot + (PO_norm_plot + woaxis) + (PO_smooth_plot + woaxis) + plot_annotation(title = "Positives")
   
   #Save plot
-  ggsave(filename = sprintf("%s/outputs/08_plots/Signal_positives_%s.pdf", project_folder, type_data), plot = Positives, device = "pdf", width = 10, height = 8)
+  ggsave(filename = sprintf("%s/outputs/08_09_10_plots/Signal_positives_%s.pdf", project_folder, type_data), plot = Positives, device = "pdf", width = 10, height = 8)
   
 }
 
