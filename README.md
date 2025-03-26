@@ -11,11 +11,97 @@ The code can be executed either through the terminal (Bash or Windows PowerShell
 
 A minimal set of data for testing purposes is provided in this repository in the `data` folder. The complete set of data from the Chagas Antigen and Epitope Atlas is available from the ArrayExpress database under accession numbers: E-MTAB-11651 and E-MTAB-11655.
 
-## Example Bash (Linux)
-./01_pools_normalize_data.R --main_folder /path/to/folder --testing FALSE --sources AR,BO,BR
+## INSTALL 
 
-## Example Windows PowerShell
-Rscript '01_pools_normalize_data.R' --main_folder "/path/to/folder" --testing FALSE --sources "AR,BO,BR"
+All code has been tested with R version 4.3.3 and Bioconductor v3.18. 
+
+### Instructions for Ubuntu Linux 22.04
+
+The default R version in Ubuntu-24.04 is 4.3.3. This has been tested. The repository has [renv](https://rstudio.github.io/renv/articles/renv.html) config files that will auto install all required dependencies once an initial interactive R session is opened from the `code` directory. This interactive R session is only required once. 
+
+```
+# in the linux terminal
+
+# update package indices
+sudo apt update
+
+# install R 
+sudo apt install r-base-core libx11-dev
+
+# clone this repo
+git clone https://github.com/trypanosomatics/Peptide-arrays-for-Chagas-disease.git
+
+# enter the code directory and make all R scripts executable
+cd Peptide-arrays-for-Chagas-disease/code/
+chmod +x *.R
+
+# install all dependencies
+# to start auto-installation, please initiate an interactive R session
+R
+```
+
+### Instructions for Windows
+
+Download and install [R-4.3.3](https://cran.r-project.org/bin/windows/base/old/4.3.3/), and maybe also [Rtools43](https://cran.r-project.org/bin/windows/Rtools/rtools43/rtools.html) (which may be required to build R packages from source). 
+Also, download and install [git for Windows](https://git-scm.com/downloads/win)
+
+Then in a powershell terminal: 
+
+```
+# clone this repo
+git clone https://github.com/trypanosomatics/Peptide-arrays-for-Chagas-disease.git
+
+# enter the code directory 
+cd Peptide-arrays-for-Chagas-disease/code/
+
+# install all dependencies
+# to start auto-installation, please initiate an interactive R session
+R.exe 
+```
+
+### Install all dependencies (Linux or Windows)
+
+For both Linux or Windows, the instructions are the same. Within an initial interactive R session, renv should bootstrap itself. You will notice a message saying "*One or more packages recorded in the lockfile are not installed.*" After renv is installed and ready, do: 
+
+```
+# this is all run within an interactive R session
+
+# install all dependencies using renv::restore
+# this will install all requirements listed in the renv.lock file
+# and respecting all configs in renv/settings.json
+# you should respond to occasional questions
+renv::restore()
+
+# check that everything is OK
+renv::status()
+
+# if you get this, you're OK to go!
+No issues found -- the project is in a consistent state.
+
+```
+
+## USAGE
+
+The more detailed descriptions of what each script does are written in the book chapter, but briefly, all code can be tested easily with a minimal data set provided in this repo. Some examples shown below: 
+
+### Example Bash (Linux)
+
+```
+# minimal, assumes all testing data and defaults parameters
+./01_pools_normalize_data.R --testing TRUE
+
+# custom main folder and only some specific datasets
+./01_pools_normalize_data.R --main_folder /path/to/folder --sources AR,BO,BR
+```
+
+### Example Windows PowerShell
+
+For Windows / Poweshell scripts are passed as arguments to the `Rscript.exe` executable. The examples follow the same spirit as above. 
+
+```
+Rscript.exe '01_pools_normalize_data.R' --testing TRUE
+Rscript.exe '01_pools_normalize_data.R' --main_folder "/path/to/folder" --testing FALSE --sources "AR,BO,BR"
+```
 
 ## Citation 
 
