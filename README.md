@@ -43,7 +43,7 @@ R
 ### Instructions for Windows
 
 Download and install [R-4.3.3](https://cran.r-project.org/bin/windows/base/old/4.3.3/), and maybe also [Rtools43](https://cran.r-project.org/bin/windows/Rtools/rtools43/rtools.html) (which may be required to build R packages from source). 
-Also, download and install [git for Windows](https://git-scm.com/downloads/win)
+Also, download and install [git for Windows](https://git-scm.com/downloads/win). Note that the R executables are not by default added to the PATH (see the [R for Windows FAQ](https://cran.r-project.org/bin/windows/base/rw-FAQ.html#Rcmd-is-not-found-in-my-PATH_0021)).
 
 Then in a powershell terminal: 
 
