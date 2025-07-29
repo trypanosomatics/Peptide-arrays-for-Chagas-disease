@@ -1,0 +1,110 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: Code for Analysis of Peptide Array Data
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Ramiro
+    family-names: Quinteros
+    email: rbquinteros@iib.unsam.edu.ar
+    affiliation: >-
+      Instituto de Investigaciones Biotecnológicas (IIBIO),
+      Universidad Nacional de San Martín (UNSAM) -- Consejo
+      Nacional de Investigaciones Científicas y Técnicas
+      (CONICET)
+  - given-names: Guadalupe
+    family-names: Romer
+    email: gromer@iib.unsam.edu.ar
+    affiliation: >-
+      Instituto de Investigaciones Biotecnológicas (IIBIO),
+      Universidad Nacional de San Martín (UNSAM) -- Consejo
+      Nacional de Investigaciones Científicas y Técnicas
+      (CONICET)
+  - given-names: Fernán
+    family-names: Agüero
+    email: fernan@iib.unsam.edu.ar
+    orcid: 'https://orcid.org/0000-0003-1331-5741'
+    affiliation: >-
+      Instituto de Investigaciones Biotecnológicas (IIBIO),
+      Universidad Nacional de San Martín (UNSAM) -- Consejo
+      Nacional de Investigaciones Científicas y Técnicas
+      (CONICET)
+  - name: >-
+      Instituto de Investigaciones Biotecnológicas (IIBIO),
+      Universidad Nacional de San Martín (UNSAM) -- Consejo
+      Nacional de Investigaciones Científicas y Técnicas
+      (CONICET)
+    address: 'Campus Miguelete UNSAM, Av. 25 de Mayo 1401'
+    city: San Martín
+    country: AR
+    post-code: B1650HMQ
+    location: Buenos Aires
+    website: 'https://www.iib.unsam.edu.ar'
+repository-code: >-
+  https://github.com/trypanosomatics/Peptide-arrays-for-Chagas-disease
+abstract: >-
+  Software and code accompanying an upcoming book chapter
+  (citation below). In this chapter, we provide annotated
+  code for analyzing peptide microarray data from the
+  CHAGASTOPE project (aka the Chagas Antigen and Epitope
+  Atlas). The same type of analysis can be applied to other
+  peptide microarray data, with adjustments to the script
+  codes if there is a different array design.
+
+
+  The repository contains a series of scripts for performing
+  the various steps involved in the analysis and
+  visualization of CHAGASTOPE data. The scripts are
+  sequentially organized in code folder, with the order
+  indicated by the number in the script name (e.g.,
+  01_pools_normalize_data). The sequential steps include
+  normalization of array data across samples, smoothing to
+  remove outliers, calculation/detection of reactive
+  (antigenic) peaks and regions, and analysis of
+  single-residue mutagenesis scanning (Alanine Scans) of
+  epitopes as described in (Ricci et al. 2023, DOI:
+  10.1038/s41467-023-37522-9).
+
+
+  The code is divided into two sections: all main scripts
+  contain the primary code, which reads and processes the
+  parameters called and then run the main function. They are
+  essentially wrappers for the main function. This main
+  function, along with other auxiliary functions are located
+  in the functions sub-folder. Each script is numbered
+  consistently in both sections. This separation is intended
+  for clarity: the main script is concise, allowing users to
+  quickly view the parameters in use and is designed for
+  those who do not wish to modify the code. In contrast, the
+  scripts containing all auxiliary functions are intended
+  for users who wish to delve into the details of the
+  process and make modifications. Parameters are located in
+  the config or parameters sections of the respective
+  scripts.
+
+
+  Both the main scripts and those in the functions folder
+  must be downloaded for the code to function correctly. The
+  code can be executed either through the terminal (Bash or
+  Windows PowerShell), which allows for modifying arguments
+  passed to the script, or by running the script in a number
+  of development environments that support the R programming
+  language (RStudio is recommended).
+
+
+  A minimal set of data for testing purposes is provided in
+  this repository in the data folder. The complete set of
+  data from the Chagas Antigen and Epitope Atlas is
+  available from the ArrayExpress database under accession
+  numbers: E-MTAB-11651 and E-MTAB-11655.
+keywords:
+  - Peptide arrays
+  - microarrays
+license: BSD-3-Clause-Attribution
+commit: b3727ec
+version: '1'
+date-released: '2025-07-29'
