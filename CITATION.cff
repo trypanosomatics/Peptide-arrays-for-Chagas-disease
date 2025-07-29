@@ -8,14 +8,6 @@ message: >-
   metadata from this file.
 type: software
 authors:
-  - given-names: Ramiro
-    family-names: Quinteros
-    email: rbquinteros@iib.unsam.edu.ar
-    affiliation: >-
-      Instituto de Investigaciones Biotecnológicas (IIBIO),
-      Universidad Nacional de San Martín (UNSAM) -- Consejo
-      Nacional de Investigaciones Científicas y Técnicas
-      (CONICET)
   - given-names: Guadalupe
     family-names: Romer
     email: gromer@iib.unsam.edu.ar
@@ -24,7 +16,15 @@ authors:
       Universidad Nacional de San Martín (UNSAM) -- Consejo
       Nacional de Investigaciones Científicas y Técnicas
       (CONICET)
-  - given-names: Fernán
+   - given-names: Ramiro
+    family-names: Quinteros
+    email: rbquinteros@iib.unsam.edu.ar
+    affiliation: >-
+      Instituto de Investigaciones Biotecnológicas (IIBIO),
+      Universidad Nacional de San Martín (UNSAM) -- Consejo
+      Nacional de Investigaciones Científicas y Técnicas
+      (CONICET)
+ - given-names: Fernán
     family-names: Agüero
     email: fernan@iib.unsam.edu.ar
     orcid: 'https://orcid.org/0000-0003-1331-5741'
