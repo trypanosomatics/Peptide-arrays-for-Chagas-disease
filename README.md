@@ -107,7 +107,7 @@ Rscript.exe '01_pools_normalize_data.R' --main_folder "/path/to/folder" --testin
 
 If you use this code, please cite: 
 
-Guadalupe Romer, Ramiro B Quinteros, Fernán Agüero. Software and tools to analyze high-density peptide array data for the Chagas Antigen and Epitope Atlas (2025). In: Trypanosoma cruzi infection: methods and protocols (Karina A Gómez & Carlos A Busgaglia, eds), Methods in Molecular Biology (series). Springer / Humana Press. **In process.**
+Guadalupe Romer, Ramiro B Quinteros, Fernán Agüero. Software and tools to analyze high-density peptide array data for the Chagas Antigen and Epitope Atlas (2025). In: [Trypanosoma cruzi infection: methods and protocols (Karina A Gómez & Carlos A Busgaglia, eds)](https://link.springer.com/book/9781071648476), Methods in Molecular Biology (series). Springer / Humana Press. **In process.**
 
 Bibtex citation (will be updated soon): 
 ```
