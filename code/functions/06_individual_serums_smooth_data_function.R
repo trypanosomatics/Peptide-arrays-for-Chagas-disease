@@ -53,11 +53,14 @@ smoothVector <- function(vector, median_window_size = 5, mean_window_size = 7, b
 
 
 #### MAIN FUNCTION ####
-smooth_serums <- function(main_folder, testing, sources, output_folder, smoothing_median_window_size, smoothing_mean_window_size, smooth_borders_option, output_suffix) {
+smooth_serums <- function(array_config, design_data_file, normalized_data_folder, output_folder, sources, smoothing_median_window_size, smoothing_mean_window_size, smooth_borders_option,
+                          output_signal_mean_decimals, output_signal_sd_decimals) {
+  types <- array_config$types
+  smoothing <- smoothing_label(smoothing_median_window_size, smoothing_mean_window_size, smooth_borders_option)
   
   #### SMOOTH DATA ####
   design_data <- fread(design_data_file, header = T, sep = "\t", na.strings = NULL)
-  design_data <- design_data[group %in% design_groups]
+  design_data <- design_data[group == array_config$design_group]
   
   ids_in_design <- design_data$array_express_id
   
@@ -67,8 +70,9 @@ smooth_serums <- function(main_folder, testing, sources, output_folder, smoothin
     print(source_for)
     for (type_for in types) {
       # type_for <- types[1]
-      normalized_data_file <- sprintf("%s/%s_%s_processed.tsv", normalized_data_folder, source_for, type_for)  
+      normalized_data_file <- output_file_name(normalized_data_folder, array_config$id, "normalized", source = source_for, type = type_for)
       normalized_data <- fread(normalized_data_file, header = T, sep = "\t", na.strings = "")
+      check_array(normalized_data, array_config$id, normalized_data_file)
       
       setnames(normalized_data, "Reporter Name", "array_express_id")
       setnames(normalized_data, "onlyRegionsData.replica1", "r1")
@@ -115,8 +119,10 @@ smooth_serums <- function(main_folder, testing, sources, output_folder, smoothin
                                      "mean_smoothed_signal", "sd_smoothed_signal",
                                      "sequence", "truncated"))
       
+      normalized_data <- add_array_column(normalized_data, array_config$id)
+      
       #Write data
-      output_file <- sprintf("%s/%s_%s_%ssmoothed_signals.tsv", output_folder, source_for, type_for, output_suffix)
+      output_file <- output_file_name(output_folder, array_config$id, "smoothed", source = source_for, type = type_for, smoothing = smoothing)
       write.table(normalized_data, file = output_file, col.names = T, row.names = F, sep = "\t", quote = T) 
     }
   }

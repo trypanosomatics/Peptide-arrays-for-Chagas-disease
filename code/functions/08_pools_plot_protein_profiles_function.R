@@ -12,39 +12,41 @@ library(patchwork)
 #############################-
 
 prepare_plot_data <- function(
-    project_folder, 
+    array_config,
     input_folder, 
-    profile_data_suffix, 
+    smoothing, 
     sources, 
     protein, 
-    output_folder, 
-    sd_multiplier_for_cutoff, 
+    index_output_file,
     only_proteins_above, 
-    only_proteins_below,
-    output_suffix
+    only_proteins_below
 ) {
   
   # LOAD THE DATA NECESSARY
-  input_files <- list.files(input_folder, pattern = profile_data_suffix, full.names = TRUE)
-  input_files <- input_files[grepl(paste(sources, collapse = "|"), input_files)]
+  input_files <- find_output_files(input_folder, array_config$id, "smoothed", source = sources, smoothing = smoothing)
   
   if (length(input_files) == 0) {
-    stop("No files found matching the given profile_data_suffix and sources.")
+    stop(sprintf("No %s smoothed files found in %s for smoothing '%s' and the given sources.", array_config$id, input_folder, smoothing))
   }
   
   # Get data
-  all_plot_data <- do.call(rbind, lapply(input_files, read.delim, stringsAsFactors = FALSE))
+  all_plot_data <- rbindlist(lapply(input_files, function(input_file) {
+    input_data <- fread(input_file, header = TRUE, sep = "\t", na.strings = NULL)
+    check_array(input_data, array_config$id, input_file)
+    input_data
+  }))
+  all_plot_data[, array := NULL]
   
   # Filter by protein
   if (!is.null(protein)) {
-    all_plot_data <- all_plot_data[all_plot_data$protein == protein, ]
+    selected_protein <- protein # data.table would read "protein" as the column
+    all_plot_data <- all_plot_data[all_plot_data$protein == selected_protein]
     if (nrow(all_plot_data) == 0) {
       stop(paste("No data found for the specified protein:", protein))
     }
   }
   
   # Order
-  setDT(all_plot_data)
   plot_order <- all_plot_data[type == "PO", .(signal = sum(mean_smoothed_signal)), by = .(protein, start)]
   plot_order <- plot_order[, .(signal = max(signal)), by = .(protein)]
   plot_order <- plot_order[order(-signal)]
@@ -61,21 +63,10 @@ prepare_plot_data <- function(
   # Save the index
   index_data <- data.table(protein = proteins_to_plot)
   index_data[, page := .I]
-  
-  output_file_prefix <- if (is.null(protein)) {
-    sprintf("protein_profiles_cruzi_%sSD", sd_multiplier_for_cutoff)
-  } else {
-    sprintf("protein_profiles_cruzi_%sSD_selected_proteins", sd_multiplier_for_cutoff)
-  }
-  
-  output_file_name <- if (is.null(output_suffix)) {
-    sprintf("%s/%s_index.tsv", output_folder, output_file_prefix)
-  } else {
-    sprintf("%s/%s_%s_index.tsv", output_folder, output_file_prefix, output_suffix)
-  }
+  index_data <- add_array_column(index_data, array_config$id)
   
   write.table(index_data, 
-              file = output_file_name, 
+              file = index_output_file, 
               col.names = TRUE, 
               row.names = FALSE, 
               sep = "\t", 
@@ -89,30 +80,30 @@ prepare_plot_data <- function(
 ####    Main Function    ####
 #############################-
 
-plot_proteins = function(project_folder,
+plot_proteins = function(array_config,
+                         project_folder,
                          input_folder,
-                         design_file,
                          sources,
-                         profile_data_suffix,
+                         smoothing,
                          output_folder,
                          protein,
                          only_proteins_above,
                          only_proteins_below,
                          sd_multiplier_for_cutoff,
-                         output_suffix,
                          fixed_scale) {
   
+  scope <- if (is.null(protein)) "all" else protein
+  sd_label <- sprintf("%sSD", fmt_num(sd_multiplier_for_cutoff))
+  
   plot_data_result <- prepare_plot_data(
-    project_folder = project_folder,
+    array_config = array_config,
     input_folder = input_folder,
-    protein = protein,
-    profile_data_suffix = profile_data_suffix,
+    smoothing = smoothing,
     sources = sources,
-    output_folder = output_folder,
-    sd_multiplier_for_cutoff = sd_multiplier_for_cutoff,
+    protein = protein,
+    index_output_file = output_file_name(output_folder, array_config$id, "profiles_index", smoothing = smoothing, sd = sd_label, scope = scope),
     only_proteins_above = only_proteins_above,
-    only_proteins_below = only_proteins_below,
-    output_suffix = output_suffix
+    only_proteins_below = only_proteins_below
   )
   
   all_plot_data <- plot_data_result$all_plot_data
@@ -131,15 +122,12 @@ plot_proteins = function(project_folder,
   max_plot <- max(as.numeric(all_plot_data$error_max))
   
   # CALCULATE CUTOFF
-  normalization_global_statistics_file <- sprintf("%s/outputs/01_pools_normalized_data/global_statistics.tsv", project_folder)
+  normalization_global_statistics_file <- output_file_name(sprintf("%s/outputs/01_pools_normalized_data", project_folder), array_config$id, "global_statistics")
   normalization_global_statistics <- fread(normalization_global_statistics_file, header = TRUE, sep = "\t", na.strings = NULL)
+  check_array(normalization_global_statistics, array_config$id, normalization_global_statistics_file)
   
   mode_aux <- normalization_global_statistics$mode
   sd_aux <- normalization_global_statistics$sd
-  
-#rm  # PLOT DATA
-#  plot_data_folder <- input_folder
-#  plot_data_file_suffix <- profile_data_suffix
   
   has_negative_data <- 0
   positive_serum_label <- "Positive serum"
@@ -151,17 +139,7 @@ plot_proteins = function(project_folder,
   types_colors <- setNames(color_palette, types)
   
   #PDF file
-  output_file_prefix <- if (is.null(protein)) {
-    sprintf("protein_profiles_cruzi_%sSD", sd_multiplier_for_cutoff)
-  } else {
-    sprintf("protein_profiles_cruzi_%sSD_selected_proteins", sd_multiplier_for_cutoff)
-  }
-  
-  output_file <- if (is.null(output_suffix)) {
-    sprintf("%s/%s.pdf", output_folder, output_file_prefix)
-  } else {
-    sprintf("%s/%s_%s.pdf", output_folder, output_file_prefix, output_suffix)
-  }
+  output_file <- output_file_name(output_folder, array_config$id, "profiles", smoothing = smoothing, sd = sd_label, scope = scope, ext = "pdf")
   
   graphics.off()
   pdf(output_file, width = 22, height = 11)

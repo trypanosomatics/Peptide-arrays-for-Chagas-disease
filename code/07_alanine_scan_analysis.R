@@ -5,7 +5,7 @@
 
 ## 1. In chagastope_data/inputs/03_individual_serums_array_design place the "Supplementary File S09 - Mapping of CHAGASTOPE-v2 data to T cruzi proteins.tsv" file (links in the paper)
 ## 2. In chagastope_data/inputs/04_individual_serums_raw_data place each of the raw data files from CHAGASTOPE-v2 (such as AR_P1_PO_raw.tsv) downloaded from Array Express (https://www.ebi.ac.uk/arrayexpress/experiments/E-MTAB-11655/)
-## 3. Set the "testing" variable in the config below to FALSE, or run this code with the "-test F" argument
+## 3. Set the "testing" variable in the config below to FALSE, or run this code with the "--testing FALSE" argument
 ## 4. If you are running this code in Rstudio, set the "main_folder" variable in the config below to the folder containing this code
 
 #### WARNINGS ####
@@ -18,6 +18,7 @@ args <- commandArgs(trailingOnly = TRUE)
 # Default values
 main_folder <- dirname(getwd())
 testing <- FALSE
+array_id <- "v2"
 selected_protein <- NULL
 heatmap_plot <- TRUE
 sequence_logo_plot <- TRUE
@@ -49,12 +50,19 @@ if (length(args) == 0) {
         sequence_logo_source <- unlist(strsplit(args[i + 1], ","))
       }
     }
+    if (args[i] == "--array") {
+      array_id <- args[i + 1]
+    }
   }
 }
-  
+
+source(sprintf("%s/code/functions/00_common.R", main_folder))
+array_config <- get_array(array_id, supported = "v2")
+
 # Print values
 cat("Main folder:", main_folder, "\n")
 cat("Testing:", testing, "\n")
+cat("Array:", array_config$id, "\n")
 cat("Selected_protein:", paste(selected_protein, collapse = ", "), "\n")
 cat("Heatmap_plot:", heatmap_plot, "\n")
 cat("Sequence_logo_plot:", sequence_logo_plot, "\n")
@@ -73,8 +81,13 @@ if (testing == TRUE) {
   design_alanine_file <- sprintf("%s/data/extra_files/alanine_scan_design.tsv", main_folder)
 }
 
-design_data_folder <- sprintf("%s/inputs/03_individual_serums_array_design", project_folder)
-design_data_file <- sprintf("%s/inputs/03_individual_serums_array_design/Supplementary File S09 - Mapping of CHAGASTOPE-v2 data to T cruzi proteins.tsv", project_folder)
+design_data_file <- sprintf("%s/%s", project_folder, array_config$design_file)
+design_data_folder <- dirname(design_data_file)
+output_folder <- sprintf("%s/outputs/07_alanine_scan_raw_data", project_folder)
+
+if (!dir.exists(output_folder)) {
+  dir.create(output_folder, recursive = TRUE)
+}
 
 if (!testing && length(setdiff(list.files(design_data_folder), ".gitkeep")) == 0) {
   stop("Download the CHAGASTOPE CHAGASTOPE Assay Individual Serums Design Data to perform this operation. Or use the test subset data downloaded with this repository using --testing TRUE")
@@ -87,7 +100,5 @@ functions_file <- sprintf("%s/07_alanine_scan_analysis_function.R", functions_fo
 #### CALL MAIN FUNCTION ####
 source(functions_file)
 
-alanine_scan(main_folder, testing, selected_protein, heatmap_plot, sequence_logo_plot, sequence_logo_source)
-
-output_folder <- sprintf("%s/outputs/07_alanine_scan_raw_data", project_folder)
+alanine_scan(array_config, project_folder, design_data_file, design_alanine_file, output_folder, selected_protein, heatmap_plot, sequence_logo_plot, sequence_logo_source)
 cat("Output saved in:", output_folder, "\n")

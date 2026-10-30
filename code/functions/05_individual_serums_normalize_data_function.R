@@ -12,7 +12,8 @@ calculateMode <- function(x, decimals = 0) {
 
 
 #### MAIN FUNCTION ####
-normalize_serums <- function(raw_data_folder, output_folder, testing, sources, types, output_suffix, output_signal_decimals, output_statistics_mode_decimals, output_statistics_sd_decimals) {
+normalize_serums <- function(array_config, design_data_file, raw_data_folder, output_folder, sources, output_signal_decimals, output_statistics_mode_decimals, output_statistics_sd_decimals) {
+  types <- array_config$types
   
   #### NORMALIZE ALL DATA ####
   #Get data
@@ -60,7 +61,7 @@ normalize_serums <- function(raw_data_folder, output_folder, testing, sources, t
   
   #### NORMALIZE ONLY REGION DATA ####
   design_data <- fread(design_data_file, header = T, sep = "\t", na.strings = NULL)
-  ids_to_keep <- unique(design_data[group == "antigenic_regions_Tcruzi"]$array_express_id)
+  ids_to_keep <- unique(design_data[group == array_config$design_group]$array_express_id)
   
   #Get data
   output_initialized <- F
@@ -122,7 +123,8 @@ normalize_serums <- function(raw_data_folder, output_folder, testing, sources, t
   gc()
   
   #### SAVE DATA ####
-  global_statistics_output_file <- sprintf("%s/global_statistics.tsv", output_folder)
+  global_statistics <- add_array_column(global_statistics, array_config$id)
+  global_statistics_output_file <- output_file_name(output_folder, array_config$id, "global_statistics")
   write.table(global_statistics, file = global_statistics_output_file, col.names = T, row.names = F, sep = "\t", quote = T)
   
   for (source_for in sources) {
@@ -140,7 +142,8 @@ normalize_serums <- function(raw_data_folder, output_folder, testing, sources, t
       setnames(normalized_data_for, sprintf("%s_%s_normalizedData_onlyRegionsData_r1", source_for, type_for), "onlyRegionsData.replica1")
       setnames(normalized_data_for, sprintf("%s_%s_normalizedData_onlyRegionsData_r2", source_for, type_for), "onlyRegionsData.replica2")
       
-      normalized_data_output_file <- sprintf("%s/%s_%s%s", output_folder, source_for, type_for, output_suffix)
+      normalized_data_for <- add_array_column(normalized_data_for, array_config$id)
+      normalized_data_output_file <- output_file_name(output_folder, array_config$id, "normalized", source = source_for, type = type_for)
       write.table(normalized_data_for, file = normalized_data_output_file, col.names = T, row.names = F, sep = "\t", quote = T, na = "")
     }
   }

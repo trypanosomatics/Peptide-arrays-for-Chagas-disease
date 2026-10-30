@@ -11,20 +11,18 @@ calculateMode <- function(x, decimals = 0) {
 
 #### MAIN FUNCTION ####
 #### NORMALIZE DATA ####
-normalize_and_process_data <- function(raw_data_folder, output_folder, sources) {
+normalize_and_process_data <- function(raw_data_folder, output_folder, sources, array_config) {
   #Get data
   output_initialized <- FALSE
   
-  # INTERNAL CONFIG (DO NOT CHANGE)
-  sources_to_normalize_as_negatives <- c("LE")
-  sources_to_exclude_from_global_statistics <- c("LE")
-  types <- c("PO", "NE")
+  # INTERNAL CONFIG (from functions/00_common.R)
+  sources_to_normalize_as_negatives <- array_config$negative_like_sources
+  sources_to_exclude_from_global_statistics <- array_config$negative_like_sources
+  types <- array_config$types
   
   output_signal_decimals <- 2
   output_statistics_mode_decimals <- 2
   output_statistics_sd_decimals <- 2
-  
-  output_suffix <- "processed.tsv"
   
   for (source_for in sources) {
     # source_for <- sources[1]
@@ -105,7 +103,8 @@ normalize_and_process_data <- function(raw_data_folder, output_folder, sources) 
   gc()
   
   #### SAVE DATA ####
-  global_statistics_output_file <- sprintf("%s/global_statistics.tsv", output_folder)
+  global_statistics <- add_array_column(global_statistics, array_config$id)
+  global_statistics_output_file <- output_file_name(output_folder, array_config$id, "global_statistics")
   write.table(global_statistics, file = global_statistics_output_file, col.names = T, row.names = F, sep = "\t", quote = T)
   
   for (source_for in sources) {
@@ -117,8 +116,9 @@ normalize_and_process_data <- function(raw_data_folder, output_folder, sources) 
       cols_to_select <- c("Reporter Name", cols_to_select)
       
       normalized_data_for <- full_normalized_data[, cols_to_select, with = F]
+      normalized_data_for <- add_array_column(normalized_data_for, array_config$id)
       
-      normalized_data_output_file <- sprintf("%s/%s_%s_%s", output_folder, source_for, type_for, output_suffix)
+      normalized_data_output_file <- output_file_name(output_folder, array_config$id, "normalized", source = source_for, type = type_for)
       write.table(normalized_data_for, file = normalized_data_output_file, col.names = T, row.names = F, sep = "\t", quote = T) 
     }
   }

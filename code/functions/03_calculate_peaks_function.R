@@ -2,10 +2,14 @@
 library(data.table)
 
 
-determine_peaks <- function(main_folder, testing, sources, types, project_folder, output_folder, min_num_of_peptides_in_peak, sd_multiplier_for_cutoff, profile_data_suffix) {
+determine_peaks <- function(array_config, project_folder, profile_data_folder, output_folder, sources, min_num_of_peptides_in_peak, sd_multiplier_for_cutoff, smoothing,
+                            other_type_proportion_decimals, combined_mean_signal_decimals) {
+  types <- array_config$types
+  sequence_length <- array_config$peptide_length
   
-  global_statistics_file <- sprintf("%s/outputs/01_pools_normalized_data/global_statistics.tsv", project_folder)
+  global_statistics_file <- output_file_name(sprintf("%s/outputs/01_pools_normalized_data", project_folder), array_config$id, "global_statistics")
   global_statistics <- fread(global_statistics_file, header = TRUE, sep = "\t", na.strings = NULL)
+  check_array(global_statistics, array_config$id, global_statistics_file)
   cutoff <- global_statistics$mode + sd_multiplier_for_cutoff * global_statistics$sd
   
   #### AUXILIAR FUNCTIONS ####
@@ -94,7 +98,7 @@ determine_peaks <- function(main_folder, testing, sources, types, project_folder
   }
   
   #### CALCULATE PEAKS ####
-  sequence_offset <- sequence_length - sequence_overlap
+  sequence_offset <- array_config$peptide_offset
   
   output_initialized <- F
   for (source_for in sources) {
@@ -103,8 +107,10 @@ determine_peaks <- function(main_folder, testing, sources, types, project_folder
     for (type_for in types) {
       # type_for <- types[1]
       
-      profile_data_file <- sprintf("%s/%s_%s_%ssmoothed.tsv", profile_data_folder, source_for, type_for, profile_data_suffix)
+      profile_data_file <- output_file_name(profile_data_folder, array_config$id, "smoothed", source = source_for, type = type_for, smoothing = smoothing)
       profile_data <- fread(profile_data_file, header = TRUE, sep = "\t", na.strings = NULL)
+      check_array(profile_data, array_config$id, profile_data_file)
+      profile_data[, array := NULL]
       
       if (output_initialized == F) {
         all_profile_data <- profile_data
@@ -139,8 +145,7 @@ determine_peaks <- function(main_folder, testing, sources, types, project_folder
   real_starts <- unique(all_profile_data[, .(protein, start)])
   real_starts[, fake_peak_start := c(1:.N), by = protein]
   setnames(real_starts, "start", "peak_start")
-  real_last_starts <- real_starts
-  real_last_starts[1] <- real_last_starts[1] #unlink
+  real_last_starts <- copy(real_starts)
   setnames(real_last_starts, "peak_start", "peak_last_start")
   setnames(real_last_starts, "fake_peak_start", "fake_peak_last_start")
   
@@ -369,7 +374,6 @@ determine_peaks <- function(main_folder, testing, sources, types, project_folder
                                                         ((fake_peak_start %in% c(min_fake_start:max_fake_start)) | (fake_peak_last_start %in% c(min_fake_start:max_fake_start)) | ((fake_peak_start < min_fake_start) & (fake_peak_last_start > max_fake_start)))]
               other_type_best_original_peak_by_source <- original_peaks[other_type_best_ratio_original_peak_ratio == max(other_type_best_ratio_original_peak_ratio)][1]
               other_type_combined_peak_best_peptide <- combined_peak_profile_data[type != type_for][mean_smoothed_signal == max(mean_smoothed_signal)][1]
-              other_type_best_peak_by_source[, other_type_peak_signal_proportion := round(peak_signal / main_type_peak_signal, other_type_proportion_decimals)]
               
               peak_to_parse_for$best_peptide <- best_peptide$sequence
               peak_to_parse_for$best_peptide_source <- best_peptide$source
@@ -416,7 +420,7 @@ determine_peaks <- function(main_folder, testing, sources, types, project_folder
   
   #Add the other peak proportion
   output_peak_data$other_type_combined_peak_peak_ratio <- -1
-  output_peak_data[nchar(source) > 2, other_type_combined_peak_peak_ratio := round(other_type_combined_peak_peak_signal / combined_peak_peak_signal, other_type_proportion_decimals)]
+  output_peak_data[grepl(",", source), other_type_combined_peak_peak_ratio := round(other_type_combined_peak_peak_signal / combined_peak_peak_signal, other_type_proportion_decimals)]
   
   #### Prepare the columns for output
   output_peak_data <- output_peak_data[, -c("fake_peak_last_start", "fake_peak_start")]
@@ -426,7 +430,8 @@ determine_peaks <- function(main_folder, testing, sources, types, project_folder
                                   "peptide_amount"))
   
   output_peak_data <- output_peak_data[order(-type, protein, nchar(source), source)]
-  output_file <- sprintf("%s/pools_peaks_cutoff%sSD_%spep.tsv", output_folder, sd_multiplier_for_cutoff, min_num_of_peptides_in_peak)
+  output_peak_data <- add_array_column(output_peak_data, array_config$id)
+  output_file <- output_file_name(output_folder, array_config$id, "peaks", smoothing = smoothing, cutoff = cutoff_label(sd_multiplier_for_cutoff, min_num_of_peptides_in_peak))
 
   #### Write Output
   write.table(output_peak_data, file = output_file, col.names = T, row.names = F, sep = "\t", quote = T)

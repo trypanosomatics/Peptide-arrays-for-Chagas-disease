@@ -13,98 +13,78 @@ library(patchwork)
 #### Auxiliar functions ####
 ############################-
 
-process_files <- function(project_folder, type_data, raw_data_suffix, normalized_data_suffix, smoothed_data_suffix) {
+process_files <- function(array_config, project_folder, smoothing) {
   
-  path_to_files <- ""
+  # Raw data are inputs (ArrayExpress file names), normalized and smoothed data are pipeline outputs
+  folders <- list(
+    v1 = c(raw = "inputs/02_pools_raw_data", normalized = "outputs/01_pools_normalized_data", smoothed = "outputs/02_pools_smoothed_data"),
+    v2 = c(raw = "inputs/04_individual_serums_raw_data", normalized = "outputs/05_individual_serums_normalized_data", smoothed = "outputs/06_individual_serums_smoothed_data")
+  )[[array_config$id]]
+  folders <- setNames(sprintf("%s/%s", project_folder, folders), names(folders))
   
-  directory_numbers <- list(
-    pools = c(raw = "02", normalized = "01", smoothed = "02"),
-    individual_serums = c(raw = "04", normalized = "05", smoothed = "06")
-  )
-  
-  steps <- c("raw", "normalized", "smoothed")
-  all_data_raw <- data.frame()
-  all_data_normalized <- data.frame()
-  all_data_smoothed <- data.frame()
-  
-  for(step in steps){
-    dir_num <- directory_numbers[[type_data]][[step]]
-    if (step == "raw") {
-      path_to_files <- sprintf("%s/inputs/%s_%s_raw_data", project_folder, dir_num, type_data)
-      files <- list.files(path = path_to_files, pattern = raw_data_suffix, full.names = TRUE)
-      
-      for (file in files) {
-        # file <- files[1]
-        data <- read_delim(file, delim = "\t", trim_ws = TRUE, show_col_types = FALSE)
-        
-        data_long <- data %>%
-          pivot_longer(cols = -`Reporter Name`, names_to = "Sample", values_to = "Signal")
-        
-        if(type_data == "pools"){
-          data_long$source <- sapply(strsplit(data_long[[2]], "_"), `[`, 1)
-          data_long$type <- sapply(strsplit(data_long[[2]], "_"), `[`, 2)
-          data_long$type <- as.factor(data_long$type)
-          data_long$source <- as.factor(data_long$source)}
-        else{
-          data_long$source <- unlist(strsplit(tail(unlist(strsplit(file, split = "/")), n=1),split = "_"))[1]
-          data_long$type <- unlist(strsplit(tail(unlist(strsplit(file, split = "/")), n=1),split = "_"))[3]
-        }
-        
-        all_data_raw <- bind_rows(all_data_raw, data_long)
-      }
-      
-      rm(data, data_long)
-      
-    } else if (step == "normalized") {
-      path_to_files <- sprintf("%s/outputs/%s_%s_normalized_data", project_folder, dir_num, type_data)
-      
-      files <- list.files(path = path_to_files, pattern = normalized_data_suffix, full.names = TRUE)
-
-      for (file in files) {
-        data <- read_delim(file, delim = "\t", trim_ws = TRUE, show_col_types = FALSE)
-        
-        data_long <- data %>%
-          pivot_longer(cols = -`Reporter Name`, names_to = "Sample", values_to = "Signal")
-        
-        if(type_data == "pools"){
-          data_long$source <- sapply(strsplit(data_long[[2]], "_"), `[`, 1)
-          data_long$type <- sapply(strsplit(data_long[[2]], "_"), `[`, 2)
-          data_long$type <- as.factor(data_long$type)
-          data_long$source <- as.factor(data_long$source)}
-        else{
-          data_long$source <- unlist(strsplit(tail(unlist(strsplit(file, split = "/")), n=1),split = "_"))[1]
-          data_long$type <- unlist(strsplit(tail(unlist(strsplit(file, split = "/")), n=1),split = "_"))[3]
-        }
-        
-        all_data_normalized <- bind_rows(all_data_normalized, data_long)
-      }
-      
-      rm(data, data_long)
-      
-    } else if (step == "smoothed") {
-      path_to_files <- sprintf("%s/outputs/%s_%s_smoothed_data", project_folder, dir_num, type_data)
-      
-      files <- list.files(path = path_to_files, pattern = smoothed_data_suffix, full.names = TRUE)
-
-      for (file in files) {
-        # file <- files[1]
-        data <- read_delim(file, delim = "\t", trim_ws = TRUE, show_col_types = FALSE)
-        
-        all_data_smoothed <- bind_rows(all_data_smoothed, data)
-      }
-      
-      if (type_data == "individual_serums"){
-      all_data_smoothed$source <- sapply(strsplit(all_data_smoothed[,"source"], "_"), `[`, 1)
-      }
-      
-      all_data_smoothed$type <- as.factor(all_data_smoothed$type)
-      all_data_smoothed$source <- as.factor(all_data_smoothed$source)
-      
-      rm(data, file, files, path_to_files)
-    }
+  # Individual sera are grouped by country (AR_P1 -> AR)
+  group_source <- function(source) {
+    if (array_config$id == "v2") sub("_.*", "", source) else source
   }
-  return(list(all_data_raw = all_data_raw, all_data_normalized = all_data_normalized, all_data_smoothed = all_data_smoothed))
   
+  #### RAW ####
+  all_data_raw <- data.frame()
+  files <- list.files(path = folders[["raw"]], pattern = "_raw\\.tsv$", full.names = TRUE)
+  for (file in files) {
+    # file <- files[1]
+    data <- read_delim(file, delim = "\t", trim_ws = TRUE, show_col_types = FALSE)
+    
+    data_long <- data %>%
+      pivot_longer(cols = -`Reporter Name`, names_to = "Sample", values_to = "Signal")
+    
+    # File names are <source>_<type>_raw.tsv, and individual sera sources contain "_" (AR_P1)
+    file_fields <- unlist(strsplit(sub("_raw\\.tsv$", "", basename(file)), "_"))
+    data_long$source <- group_source(paste(head(file_fields, -1), collapse = "_"))
+    data_long$type <- tail(file_fields, 1)
+    
+    all_data_raw <- bind_rows(all_data_raw, data_long)
+  }
+  
+  #### NORMALIZED ####
+  all_data_normalized <- data.frame()
+  files <- find_output_files(folders[["normalized"]], array_config$id, "normalized")
+  for (file in files) {
+    data <- read_delim(file, delim = "\t", trim_ws = TRUE, show_col_types = FALSE)
+    check_array(data, array_config$id, file)
+    file_fields <- parse_output_file_name(file)$fields
+    
+    data_long <- data %>%
+      select(-array) %>%
+      pivot_longer(cols = -`Reporter Name`, names_to = "Sample", values_to = "Signal")
+    data_long$source <- group_source(file_fields$source)
+    data_long$type <- file_fields$type
+    
+    all_data_normalized <- bind_rows(all_data_normalized, data_long)
+  }
+  
+  #### SMOOTHED ####
+  all_data_smoothed <- data.frame()
+  files <- find_output_files(folders[["smoothed"]], array_config$id, "smoothed", smoothing = smoothing)
+  if (length(files) == 0) {
+    stop(sprintf("No %s smoothed files found in %s for smoothing '%s'", array_config$id, folders[["smoothed"]], smoothing))
+  }
+  for (file in files) {
+    # file <- files[1]
+    data <- read_delim(file, delim = "\t", trim_ws = TRUE, show_col_types = FALSE)
+    check_array(data, array_config$id, file)
+    
+    all_data_smoothed <- bind_rows(all_data_smoothed, select(data, -array))
+  }
+  all_data_smoothed$source <- group_source(all_data_smoothed$source)
+  
+  for (step_data in c("all_data_raw", "all_data_normalized", "all_data_smoothed")) {
+    data <- get(step_data)
+    data$type <- as.factor(data$type)
+    data$source <- as.factor(data$source)
+    assign(step_data, data)
+  }
+  
+  return(list(all_data_raw = all_data_raw, all_data_normalized = all_data_normalized, all_data_smoothed = all_data_smoothed))
 }
 
 trans <- function(x, y_factors) {
@@ -170,15 +150,13 @@ DensityJitterplot <- function(plot_data, x_column_name, y_column_name, gradient_
 ####### Main function #######
 #############################
 
-plot_density <- function(project_folder, type_data, raw_data_suffix, normalized_data_suffix, smoothed_data_suffix,
-                         y_factors, plot_data){
+plot_density <- function(array_config, project_folder, output_folder, smoothing, y_factors){
   
   #### Datasets ####
-  plot_data_result <- process_files(project_folder = project_folder, type_data = type_data,
-                                    raw_data_suffix = raw_data_suffix, normalized_data_suffix = normalized_data_suffix,
-                                    smoothed_data_suffix = smoothed_data_suffix)
+  plot_data_result <- process_files(array_config = array_config, project_folder = project_folder, smoothing = smoothing)
+  has_negatives <- "NE" %in% array_config$types
   
-  if (type_data == "pools"){
+  if (has_negatives){
     NE_raw <- plot_data_result[[1]][(plot_data_result[[1]]$type=="NE" & plot_data_result[[1]]$source!="LE"),]
     NE_norm <- plot_data_result[[2]][(plot_data_result[[2]]$type=="NE" & plot_data_result[[2]]$source!="LE"),]
     NE_smooth <- plot_data_result[[3]][(plot_data_result[[3]]$type=="NE" & plot_data_result[[3]]$source!="LE"),]
@@ -200,7 +178,7 @@ plot_density <- function(project_folder, type_data, raw_data_suffix, normalized_
     axis.ticks.y = element_blank(),  # Remove y-axis ticks
   )
   
-  if(type_data == "pools"){
+  if(has_negatives){
   NE_raw_plot <- DensityJitterplot(NE_raw, "source", "Signal", gradient_palette = "lipari", geom_point_size = 2, 
                                    geom_point_shape = 16, plot_title = "Raw", x_label = "Source", y_label = "Signal",
                                    y_lim_min = 0, y_lim_max = max_NE, legend_position = "none", y_factors = y_factors)
@@ -217,7 +195,7 @@ plot_density <- function(project_folder, type_data, raw_data_suffix, normalized_
   Negatives <- NE_raw_plot + (NE_norm_plot + woaxis) + (NE_smooth_plot + woaxis) + plot_annotation(title = "Negatives")
   
   #Save plot
-  ggsave(filename = sprintf("%s/outputs/08_09_10_plots/Signal_negatives_%s.pdf", project_folder, type_data), plot = Negatives, device = "pdf", width = 10, height = 8)
+  ggsave(filename = output_file_name(output_folder, array_config$id, "signal_distribution", smoothing = smoothing, sign = "negatives", ext = "pdf"), plot = Negatives, device = "pdf", width = 10, height = 8)
   
   }
   
@@ -237,7 +215,7 @@ plot_density <- function(project_folder, type_data, raw_data_suffix, normalized_
   Positives <- PO_raw_plot + (PO_norm_plot + woaxis) + (PO_smooth_plot + woaxis) + plot_annotation(title = "Positives")
   
   #Save plot
-  ggsave(filename = sprintf("%s/outputs/08_09_10_plots/Signal_positives_%s.pdf", project_folder, type_data), plot = Positives, device = "pdf", width = 10, height = 8)
+  ggsave(filename = output_file_name(output_folder, array_config$id, "signal_distribution", smoothing = smoothing, sign = "positives", ext = "pdf"), plot = Positives, device = "pdf", width = 10, height = 8)
   
 }
 

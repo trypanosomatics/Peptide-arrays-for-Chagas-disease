@@ -53,11 +53,12 @@ smoothVector <- function(vector, median_window_size, mean_window_size, borders) 
 #### MAIN FUNCTION ####
 #### SMOOTH DATA ####
 
-smooth_data <- function(design_data_file, design_group, normalized_data_folder, output_folder, normalized_data_suffix, sources, smooth_median_window_size, smooth_mean_window_size, smooth_borders_option, output_type_order, output_signal_mean_decimals, output_signal_sd_decimals, output_suffix) {
+smooth_data <- function(array_config, design_data_file, normalized_data_folder, output_folder, sources, smooth_median_window_size, smooth_mean_window_size, smooth_borders_option, output_signal_mean_decimals, output_signal_sd_decimals) {
   # Get data
   design_data <- fread(design_data_file, header = TRUE, sep = "\t", na.strings = NULL)
-  design_data <- design_data[group == design_group]
-  types <- c("PO", "NE")
+  design_data <- design_data[group == array_config$design_group]
+  types <- array_config$types
+  smoothing <- smoothing_label(smooth_median_window_size, smooth_mean_window_size, smooth_borders_option)
   
   # Create an extra design
   design_data_aux <- design_data[, .(protein, start, sequence = final_sequence, truncated, array_express_id)] #remove extra columns
@@ -67,8 +68,9 @@ smooth_data <- function(design_data_file, design_group, normalized_data_folder, 
     #source_for = sources[1]
     print(source_for)
     for (type_for in types) {
-      normalized_data_file <- sprintf("%s%s_%s%s", normalized_data_folder, source_for, type_for, normalized_data_suffix)
+      normalized_data_file <- output_file_name(normalized_data_folder, array_config$id, "normalized", source = source_for, type = type_for)
       normalized_data <- fread(normalized_data_file, header = TRUE, sep = "\t", na.strings = NULL)
+      check_array(normalized_data, array_config$id, normalized_data_file)
       
       normalized_data <- normalized_data[`Reporter Name` %in% sequences_in_design]
 
@@ -101,9 +103,10 @@ smooth_data <- function(design_data_file, design_group, normalized_data_folder, 
       setcolorder(normalized_data, c("source", "type", "protein", "start",
                                      "mean_smoothed_signal", "sd_smoothed_signal",
                                      "sequence", "truncated"))
+      normalized_data <- add_array_column(normalized_data, array_config$id)
       
       # Save data
-      output_file <- sprintf("%s/%s_%s_%ssmoothed.tsv", output_folder, source_for, type_for, output_suffix)
+      output_file <- output_file_name(output_folder, array_config$id, "smoothed", source = source_for, type = type_for, smoothing = smoothing)
       write.table(normalized_data, file = output_file, col.names = TRUE, row.names = FALSE, sep = "\t", quote = TRUE)
     }
   }

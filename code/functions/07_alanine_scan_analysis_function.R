@@ -7,7 +7,7 @@ library(ggplot2) #for logo
 library(ggseqlogo) #for logo
 
 #### FUNCTION ####
-alanine_scan <- function(main_folder, testing, selected_protein, heatmap_plot, sequence_logo_plot, sequence_logo_source) {
+alanine_scan <- function(array_config, project_folder, design_data_file, design_alanine_file, output_folder, selected_protein, heatmap_plot, sequence_logo_plot, sequence_logo_source) {
   
   ### estimateSignalChanges ###
   ## This function estimates the signal change per residue and for each sample analyzed in one protein.
@@ -25,7 +25,7 @@ alanine_scan <- function(main_folder, testing, selected_protein, heatmap_plot, s
     AlanineScanData$alanine_position_start[AlanineScanData$alanine_position == 0] <- 0
     
     temp_protein <- filter(AlanineScanData,!is.na(signal))
-    if (length(temp_protein$Reporter.Name) < 2) {next()}
+    if (length(temp_protein$Reporter.Name) < 2) {return(NULL)}
     temp_protein$change <- 0
     temp_originals <- select(filter(temp_protein,alanine_position_start == 0),peptide_to_scan,signal,sample) 
     temp_originals$original_signal <- temp_originals$signal
@@ -113,7 +113,7 @@ alanine_scan <- function(main_folder, testing, selected_protein, heatmap_plot, s
       sub_signal_change_per_position <- sub_signal_change_per_position[sub_signal_change_per_position$protein == protein_id]
     }
     
-    if (sources != "all") {
+    if (!identical(sources, "all")) {
       sub_signal_change_per_position <- sub_signal_change_per_position[sample %in% sources]
     }
     
@@ -1017,7 +1017,7 @@ alanine_scan <- function(main_folder, testing, selected_protein, heatmap_plot, s
   
   #Get only the ids for the AlaScan
   design_data <- fread(file = design_data_file, header = T, sep = "\t", na.strings = NULL)
-  design_data <- design_data[group == "alascan_best_peaks_Tcruzi"]
+  design_data <- design_data[group == array_config$alascan_group]
   ids_to_keep <- unique(design_data$array_express_id)
   
   for (i in 1:length(files)) {
@@ -1036,25 +1036,33 @@ alanine_scan <- function(main_folder, testing, selected_protein, heatmap_plot, s
   } #Load all micro-array results for all samples
   
   proteins_to_process <- if (!is.null(selected_protein)) {
-    unique(design_alanine$protein[design_alanine$protein == selected_protein])
+    unique(design_alanine$protein[design_alanine$protein %in% selected_protein])
   } else {
     unique(design_alanine$protein)
   }
   
+  sera_label <- if (identical(sequence_logo_source, "all")) "all" else paste(sequence_logo_source, collapse = "+")
+  
   for (protein_to_estimate in proteins_to_process) {
     dt <- estimateSignalChanges(protein_to_estimate)
+    if (is.null(dt)) {
+      writeLines(sprintf("Skipping %s: not enough signal data", protein_to_estimate))
+      next
+    }
     split_dt <- splitData(dt)
     # sequence_logos <- lapply(split_dt, plotLogo)
     writeLines(sprintf("Plotting %s...", protein_to_estimate))
     
     matrix <- lapply(split_dt, generateHeatmapMatrix)
     #### SAVE RESULTS ####
-    write.table(dt,paste0(project_folder, "/outputs/07_alanine_scan_raw_data/Raw_data_signal_change_alanine_scan_", protein_to_estimate,".tsv"),sep = "\t")  #long format
+    write.table(add_array_column(dt, array_config$id),
+                output_file_name(output_folder, array_config$id, "alascan_change", protein = protein_to_estimate),
+                sep = "\t", row.names = FALSE)  #long format
     
     for (i in seq_along(matrix)) {
       write.table(
         matrix[[i]],
-        paste0(project_folder, "/outputs/07_alanine_scan_raw_data/Raw_data_signal_change_matrix_alanine_scan_", protein_to_estimate, "_group_", i, ".tsv"), 
+        output_file_name(output_folder, array_config$id, "alascan_matrix", protein = protein_to_estimate, group = i), 
         sep = "\t", row.names = TRUE) #matrix for heatmap
     }
     
@@ -1062,7 +1070,7 @@ alanine_scan <- function(main_folder, testing, selected_protein, heatmap_plot, s
     if (heatmap_plot) {
       for (i in seq_along(matrix)) {
         pdf(
-          file = paste0(project_folder, "/outputs/07_alanine_scan_raw_data/Heatmap_alanine_scan_", protein_to_estimate, "_group_", i, ".pdf"),
+          file = output_file_name(output_folder, array_config$id, "alascan_heatmap", protein = protein_to_estimate, group = i, ext = "pdf"),
           height = 12, width = 12
         )
         print(make_heatmap(temp_matrix = matrix[[i]], selected_protein = paste(protein_to_estimate, "group", i)))
@@ -1074,14 +1082,14 @@ alanine_scan <- function(main_folder, testing, selected_protein, heatmap_plot, s
       for (i in seq_along(split_dt)){
       # for (i in seq_along(sequence_logos)){
         pdf(
-          file = paste0(project_folder, "/outputs/07_alanine_scan_raw_data/sequence_logo_alanine_scan_", protein_to_estimate, "_group_", i, "_", sequence_logo_source ,".pdf"),
+          file = output_file_name(output_folder, array_config$id, "alascan_logo", protein = protein_to_estimate, group = i, sera = sera_label, ext = "pdf"),
           height = 12, width = 12
         )
         print(plotLogo(sub_signal_change_per_position = split_dt[[i]],
         # print(plotLogo(sub_signal_change_per_position = sequence_logos[[i]], 
                             protein_id = protein_to_estimate, 
                             sources = sequence_logo_source,
-                            plot_title = paste(protein_to_estimate, "group", i, sequence_logo_source, "source")))
+                            plot_title = paste(protein_to_estimate, "group", i, sera_label, "source")))
         dev.off()
       }
     }

@@ -88,18 +88,20 @@ splitFastaIntoPeptides <- function(fasta_data, peptide_length, peptide_offset, m
 }
 
 #### MAIN FUNCTION ####
-processAntigenicRegions <- function(project_folder, extra_files_folder, peaks_tag,
+processAntigenicRegions <- function(array_config, project_folder, extra_files_folder, smoothing, peaks_tag,
                                     chronic_peaks_types, chronic_peaks_max_other_type_signal_ratio, 
-                                    chronic_peaks_peptide_length, chronic_peaks_peptide_offset, 
                                     chronic_peaks_min_peptide_length, chronic_peaks_border_peptide_amount, 
                                     detailed_region_output_file, summary_region_output_file) {
+  # Peptide geometry depends on the array (v1: offset 4, v2: offset 1)
+  chronic_peaks_peptide_length <- array_config$peptide_length
+  chronic_peaks_peptide_offset <- array_config$peptide_offset
   
-  #pools_peaks_cutoffs5SD_2pep.tsv
-  chronic_peaks_data_file <- sprintf("%s/outputs/03_pools_antigenic_peaks/pools_peaks_cutoff%s.tsv", project_folder, peaks_tag)
+  chronic_peaks_data_file <- output_file_name(sprintf("%s/outputs/03_pools_antigenic_peaks", project_folder), array_config$id, "peaks", smoothing = smoothing, cutoff = peaks_tag)
   sylvio_fasta_data_file <- sprintf("%s/sylvio-x10-tritrypdb-5.Dec.2016-no-pseudo_SIMPLIFIED_TABBED.tsv", extra_files_folder)
   brener_fasta_data_file <- sprintf("%s/tcruzi-clbrener-tritrypdb-5.Dec.2016-no-pseudo_SIMPLIFIED_TABBED.tsv", extra_files_folder)
   
   chronic_peaks_data <- fread(chronic_peaks_data_file, header = TRUE, sep = "\t", na.strings = NULL)
+  check_array(chronic_peaks_data, array_config$id, chronic_peaks_data_file)
   sylvio_fasta_data <- fread(sylvio_fasta_data_file, header = TRUE, sep = "\t", na.strings = NULL)
   brener_fasta_data <- fread(brener_fasta_data_file, header = TRUE, sep = "\t", na.strings = NULL)
   
@@ -140,7 +142,9 @@ processAntigenicRegions <- function(project_folder, extra_files_folder, peaks_ta
   region_data <- region_data[, .(protein, start, region, is_border, peptide, origin)]
   
   ## Calculate the region sequence
-  region_data[, sequence_aux := substring(peptide, 16, 16)]
+  #The first peptide of each region is used whole, each following peptide adds its last <offset> residues
+  new_residues_start <- chronic_peaks_peptide_length - chronic_peaks_peptide_offset + 1
+  region_data[, sequence_aux := substring(peptide, new_residues_start, chronic_peaks_peptide_length)]
   region_data[, relative_pos_aux := .SD[, .I], by = region]
   region_data[relative_pos_aux == 1, sequence_aux := peptide]
   
@@ -165,7 +169,7 @@ processAntigenicRegions <- function(project_folder, extra_files_folder, peaks_ta
   no_border_region_data <- no_border_region_data[(start >= no_border_start) & (start <= no_border_last_start)]
   
   #Calculate the rest
-  no_border_region_data[, sequence_aux := substring(peptide, 16, 16)]
+  no_border_region_data[, sequence_aux := substring(peptide, new_residues_start, chronic_peaks_peptide_length)]
   no_border_region_data[, relative_pos_aux := .SD[, .I], by = region]
   no_border_region_data[relative_pos_aux == 1, sequence_aux := peptide]
   
@@ -183,6 +187,8 @@ processAntigenicRegions <- function(project_folder, extra_files_folder, peaks_ta
   
   #Remove extra cols
   region_data <- region_data[, .(protein, start, region, is_border, peptide)]
+  region_data <- add_array_column(region_data, array_config$id)
+  region_summary <- add_array_column(region_summary, array_config$id)
   
   #Save data
   write.table(region_data, file = detailed_region_output_file, col.names = T, row.names = F, sep = "\t", quote = T)

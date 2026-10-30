@@ -14,39 +14,41 @@ library(ggh4x)
 #### Auxiliary Functions ####
 #############################-
 prepare_plot_data <- function(
-    project_folder, 
+    array_config,
     input_folder, 
-    profile_data_suffix, 
+    smoothing, 
     sources, 
     protein, 
-    output_folder, 
-    sd_multiplier_for_cutoff, 
+    index_output_file,
     only_proteins_above, 
-    only_proteins_below,
-    output_suffix
+    only_proteins_below
 ) {
   
   # LOAD THE DATA NECESSARY
-  input_files <- list.files(input_folder, pattern = profile_data_suffix, full.names = TRUE)
-  input_files <- input_files[grepl(paste(sources, collapse = "|"), input_files)]
+  input_files <- find_output_files(input_folder, array_config$id, "smoothed", source = sources, smoothing = smoothing)
   
   if (length(input_files) == 0) {
-    stop("No files found matching the given profile_data_suffix and sources.")
+    stop(sprintf("No %s smoothed files found in %s for smoothing '%s' and the given sources.", array_config$id, input_folder, smoothing))
   }
   
   # Get data
-  all_plot_data <- do.call(rbind, lapply(input_files, read.delim, stringsAsFactors = FALSE))
+  all_plot_data <- rbindlist(lapply(input_files, function(input_file) {
+    input_data <- fread(input_file, header = TRUE, sep = "\t", na.strings = NULL)
+    check_array(input_data, array_config$id, input_file)
+    input_data
+  }))
+  all_plot_data[, array := NULL]
   
   # Filter by protein
   if (!is.null(protein)) {
-    all_plot_data <- all_plot_data[all_plot_data$protein == protein, ]
+    selected_protein <- protein # data.table would read "protein" as the column
+    all_plot_data <- all_plot_data[all_plot_data$protein == selected_protein]
     if (nrow(all_plot_data) == 0) {
       stop(paste("No data found for the specified protein:", protein))
     }
   }
   
   # Order
-  setDT(all_plot_data)
   plot_order <- all_plot_data[type == "PO", .(signal = sum(mean_smoothed_signal)), by = .(protein, start)]
   plot_order <- plot_order[, .(signal = max(signal)), by = .(protein)]
   plot_order <- plot_order[order(-signal)]
@@ -63,21 +65,10 @@ prepare_plot_data <- function(
   # Save the index
   index_data <- data.table(protein = proteins_to_plot)
   index_data[, page := .I]
-  
-  output_file_prefix <- if (is.null(protein)) {
-    sprintf("individual_serums_protein_profiles_cruzi_%sSD", sd_multiplier_for_cutoff)
-  } else {
-    sprintf("individual_serums_protein_profiles_cruzi_%sSD_selected_proteins", sd_multiplier_for_cutoff)
-  }
-  
-  output_file_name <- if (is.null(output_suffix)) {
-    sprintf("%s/%s_index.tsv", output_folder, output_file_prefix)
-  } else {
-    sprintf("%s/%s_%s_index.tsv", output_folder, output_file_prefix, output_suffix)
-  }
+  index_data <- add_array_column(index_data, array_config$id)
   
   write.table(index_data, 
-              file = output_file_name, 
+              file = index_output_file, 
               col.names = TRUE, 
               row.names = FALSE, 
               sep = "\t", 
@@ -90,18 +81,17 @@ prepare_plot_data <- function(
 #######################-
 #### MAIN FUNCTION ####-
 #######################
-plot_proteins_ridge = function(project_folder, input_folder, design_file, sources, 
-                               profile_data_suffix, output_folder, protein, 
-                               sd_multiplier_for_cutoff, output_suffix, only_proteins_above, only_proteins_below, pdf_width, pdf_height) { 
+plot_proteins_ridge = function(array_config, input_folder, sources, 
+                               smoothing, output_folder, protein, 
+                               only_proteins_above, only_proteins_below, pdf_width, pdf_height) { 
   
+  scope <- if (is.null(protein)) "all" else protein
   
-  plot_data_result <- prepare_plot_data( project_folder = project_folder, input_folder = input_folder, 
-                                         protein = protein, profile_data_suffix = profile_data_suffix, 
-                                         sources = sources, output_folder = output_folder, 
-                                         sd_multiplier_for_cutoff = sd_multiplier_for_cutoff, 
-                                         only_proteins_above = only_proteins_above, 
-                                         only_proteins_below = only_proteins_below, 
-                                         output_suffix = output_suffix) 
+  plot_data_result <- prepare_plot_data(array_config = array_config, input_folder = input_folder, 
+                                        smoothing = smoothing, sources = sources, protein = protein, 
+                                        index_output_file = output_file_name(output_folder, array_config$id, "ridgeplots_index", smoothing = smoothing, scope = scope), 
+                                        only_proteins_above = only_proteins_above, 
+                                        only_proteins_below = only_proteins_below) 
   
   all_plot_data <- plot_data_result$all_plot_data
   all_plot_data$source <- factor(all_plot_data$source)
@@ -118,17 +108,9 @@ plot_proteins_ridge = function(project_folder, input_folder, design_file, source
   all_plot_data$country_color <- country_colors[all_plot_data$country]
   
   #Crear archivo PDF 
-  output_file_prefix <- if (is.null(protein)) { 
-    sprintf("individual_serums_protein_ridgeplots_%sSD", sd_multiplier_for_cutoff) 
-    } else { 
-      sprintf("individual_serums_protein_ridgeplots_%sSD_selected_proteins", sd_multiplier_for_cutoff) 
-      } 
-  output_file_name <- if (is.null(output_suffix)) { 
-    sprintf("%s/%s.pdf", output_folder, output_file_prefix) 
-    } else { sprintf("%s/%s_%s.pdf", output_folder, output_file_prefix, output_suffix) 
-      } 
+  pdf_output_file <- output_file_name(output_folder, array_config$id, "ridgeplots", smoothing = smoothing, scope = scope, ext = "pdf")
   
-  pdf(file = output_file_name, width = pdf_width, height = pdf_height) 
+  pdf(file = pdf_output_file, width = pdf_width, height = pdf_height) 
   
   for (protein_for in proteins_to_plot) { 
     #protein_for <- proteins_to_plot[1]

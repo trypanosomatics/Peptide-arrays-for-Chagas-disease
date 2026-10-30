@@ -17,7 +17,8 @@ args <- commandArgs(trailingOnly = TRUE)
 # Default values
 main_folder <- dirname(getwd())
 testing <- FALSE
-sources <- c("AR", "BO", "BR", "CO", "MX", "US", "LE")
+array_id <- "v1"
+sources <- NULL # default: all sources of the array (functions/00_common.R)
 
 if (length(args) == 0) {
   cat("No arguments provided. Using default values.\n")
@@ -32,11 +33,21 @@ if (length(args) == 0) {
     if (args[i] == "--sources") {
       sources <- unlist(strsplit(args[i + 1], ","))
     }
+    if (args[i] == "--array") {
+      array_id <- args[i + 1]
+    }
   }
+}
+
+source(sprintf("%s/code/functions/00_common.R", main_folder))
+array_config <- get_array(array_id, supported = "v1")
+if (is.null(sources)) {
+  sources <- array_config$default_sources
 }
 
 # Print values 
 cat("Main folder:", main_folder, "\n")
+cat("Array:", array_config$id, "\n")
 cat("Testing:", testing, "\n")
 cat("Sources:", paste(sources, collapse = ", "), "\n")
 
@@ -69,6 +80,6 @@ functions_file <- sprintf("%s/01_pools_normalize_data_function.R", functions_fol
 #### CALL MAIN FUNCTION ####
 source(functions_file)
 
-normalize_and_process_data(raw_data_folder, output_folder, sources)
+normalize_and_process_data(raw_data_folder, output_folder, sources, array_config)
 
 cat("Output saved in:", output_folder, "\n")
