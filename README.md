@@ -94,6 +94,19 @@ The more detailed descriptions of what each script does are written in the book 
 ./01_pools_normalize_data.R --main_folder /path/to/folder --sources AR,BO,BR
 ```
 
+### Arrays, output names and parameters
+
+The design of each array (CHAGASTOPE-v1 for pooled sera, CHAGASTOPE-v2 for individual sera: peptide length and offset, design files, sources) is defined once in `code/functions/00_common.R`. Every script accepts `--array v1|v2` and defaults to the array it was written for.
+
+Output files are named `<array>.<step>.<fields>.<ext>` and include the parameters that produced them, for example `v1.smoothed.AR.PO.med3_mean0_zeros.tsv` or `v1.peaks.med3_mean0_zeros.cutoff4SD_2pep.tsv`. The smoothing scripts print the label of their run ("Smoothing label"). Pass it to later steps with `--smoothing_label`:
+
+```
+./02_pools_smooth_data.R --testing TRUE --smoothing_median_window_size 3 --smoothing_mean_window_size 5
+./03_calculate_peaks.R --testing TRUE --smoothing_label med3_mean5_zeros
+```
+
+These names replaced the earlier ones and some command-line flags. See [BREAKING-CHANGES.md](BREAKING-CHANGES.md).
+
 ### Example Windows PowerShell
 
 For Windows / Poweshell scripts are passed as arguments to the `Rscript.exe` executable. The examples follow the same spirit as above. 

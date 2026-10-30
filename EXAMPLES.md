@@ -7,6 +7,12 @@ examples.
 
 The order and numbering of all examples follow the chapter sections. 
 
+> **Note:** these commands match the code as published with the chapter (commit `60f44bf`).
+> The current code uses different output file names and replaces some flags (`--output_suffix`,
+> `--profile_data_suffix`, `--peaks_tag`, `--type_data`, ...). See
+> [BREAKING-CHANGES.md](BREAKING-CHANGES.md) for the current equivalents, or run
+> `git checkout 60f44bf` to use these commands as printed.
+
 ## 3. Methods
 
 ```bash
